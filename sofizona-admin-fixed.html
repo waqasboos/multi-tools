@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<meta name="theme-color" content="#00C853">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>SofiZona Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0C0E0C;--bg2:#111411;--bg3:#161A16;--bg4:#1C221C;--bg5:#222A22;
+  --g:#00C853;--g2:#00E676;--g3:rgba(0,200,83,.12);
+  --tx:#F0FFF4;--txd:rgba(240,255,244,.75);--txm:rgba(240,255,244,.45);
+  --bd:rgba(0,200,83,.18);--bdd:rgba(0,200,83,.08);
+  --red:#FF5252;--warn:#FFB300;--blue:#40C4FF;
+  --fm:'Outfit',sans-serif;
+  --sh:0 4px 20px rgba(0,0,0,.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:var(--fm);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--g);border-radius:3px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+
+/* ═══ LOGIN ═══ */
+.login-pg{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
+.login-card{background:var(--bg2);border:1px solid var(--bd);border-radius:20px;padding:44px 40px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.login-logo{text-align:center;margin-bottom:32px}
+.login-logo-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#007B33,var(--g));display:inline-flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,200,83,.3)}
+.login-logo h1{font-size:22px;font-weight:800;color:var(--tx)}
+.login-logo p{font-size:12px;color:var(--txm);margin-top:4px}
+.login-field{margin-bottom:18px}
+.login-field label{display:block;font-size:11px;font-weight:700;color:var(--g);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px}
+.login-input{width:100%;background:var(--bg3);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;color:var(--tx);font-family:var(--fm);font-size:14px;outline:none;transition:all .3s}
+.login-input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,200,83,.1)}
+.login-btn{width:100%;background:var(--g);color:#0C0E0C;font-family:var(--fm);font-size:15px;font-weight:800;padding:15px;border-radius:10px;border:none;cursor:pointer;transition:.3s;margin-top:8px}
+.login-btn:hover{background:var(--g2);transform:translateY(-1px)}
+.login-err{font-size:12px;color:var(--red);text-align:center;margin-top:10px;display:none}
+.login-err.show{display:block}
+
+/* ═══ MAIN LAYOUT ═══ */
+.app{display:none}
+.app.active{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:240px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--bd);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s}
+.sidebar-logo{padding:20px 20px 16px;border-bottom:1px solid var(--bdd)}
+.sidebar-logo-wrap{display:flex;align-items:center;gap:10px}
+.sb-logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#007B33,var(--g));display:flex;align-items:center;justify-content:center;font-size:16px}
+.sb-logo-txt{font-size:16px;font-weight:800;color:var(--tx)}
+.sb-logo-txt em{color:var(--g);font-style:normal}
+.sb-logo-sub{font-size:10px;color:var(--txm);margin-top:1px}
+.sidebar-nav{flex:1;padding:16px 12px;overflow-y:auto}
+.nav-section{margin-bottom:20px}
+.nav-sec-lbl{font-size:9.5px;font-weight:700;color:var(--txm);letter-spacing:2px;text-transform:uppercase;padding:0 8px;margin-bottom:6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .2s;color:var(--txd);font-size:13px;font-weight:500;margin-bottom:2px;border:1px solid transparent}
+.nav-item:hover{background:var(--bg3);color:var(--tx)}
+.nav-item.active{background:var(--g3);border-color:var(--bd);color:var(--g)}
+.nav-item-ico{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;background:rgba(255,255,255,.05);flex-shrink:0}
+.nav-item.active .nav-item-ico{background:rgba(0,200,83,.15)}
+.sidebar-bottom{padding:16px 12px;border-top:1px solid var(--bdd)}
+.logout-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:all .2s;color:var(--red);font-size:13px;font-weight:600;width:100%;background:none;border:1px solid transparent}
+.logout-btn:hover{background:rgba(255,82,82,.08);border-color:rgba(255,82,82,.2)}
+
+/* MAIN CONTENT */
+.main{flex:1;margin-left:240px;min-height:100vh}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--bdd);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:16px;font-weight:800;color:var(--tx)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-badge{display:flex;align-items:center;gap:7px;padding:5px 14px;border-radius:100px;background:var(--g3);border:1px solid var(--bd);font-size:11px;font-weight:700;color:var(--g);letter-spacing:1px}
+.tb-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:tbdot 1.4s infinite}
+@keyframes tbdot{0%,100%{box-shadow:0 0 0 0 rgba(0,200,83,.7)}60%{box-shadow:0 0 0 6px transparent}}
+
+.content{padding:28px}
+
+/* PANELS */
+.panel-pg{display:none}
+.panel-pg.active{display:block}
+
+/* ═══ STAT CARDS ═══ */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:var(--bg2);border:1px solid var(--bdd);border-radius:16px;padding:22px 20px;transition:border-color .3s,transform .3s}
+.stat-card:hover{border-color:var(--bd);transform:translateY(-2px)}
+.stat-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.stat-card-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.stat-card-ico.green{background:rgba(0,200,83,.12);border:1px solid rgba(0,200,83,.2)}
+.stat-card-ico.blue{background:rgba(64,196,255,.12);border:1px solid rgba(64,196,255,.2)}
+.stat-card-ico.warn{background:rgba(255,179,0,.12);border:1px solid rgba(255,179,0,.2)}
+.stat-card-ico.red{background:rgba(255,82,82,.12);border:1px solid rgba(255,82,82,.2)}
+.stat-card-num{font-size:clamp(24px,3vw,36px);font-weight:800;color:var(--tx);line-height:1}
+.stat-card-lbl{font-size:11px;font-weight:600;color:var(--txm);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.stat-card-change{font-size:11px;color:var(--g);font-weight:600}
+
+/* ═══ SECTION HEADER ═══ */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sec-hdr-left h2{font-size:16px;font-weight:800;color:var(--tx)}
+.sec-hdr-left p{font-size:12px;color:var(--txm);margin-top:2px}
+
+/* ═══ BUTTONS ═══ */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;font-family:var(--fm);font-size:12px;font-weight:700;cursor:pointer;transition:all .25s;border:none;white-space:nowrap}
+.btn-g{background:var(--g);color:#0C0E0C}
+.btn-g:hover{background:var(--g2);transform:translateY(-1px)}
+.btn-r{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.2)}
+.btn-r:hover{background:rgba(255,82,82,.2)}
+.btn-b{background:rgba(64,196,255,.12);color:var(--blue);border:1px solid rgba(64,196,255,.2)}
+.btn-b:hover{background:rgba(64,196,255,.2)}
+.btn-o{background:var(--bg3);color:var(--txd);border:1px solid rgba(255,255,255,.08)}
+.btn-o:hover{border-color:var(--bd);color:var(--g)}
+.btn-sm{padding:6px 12px;font-size:11px}
+
+/* ═══ ENTRIES TABLE ═══ */
+.table-wrap{background:var(--bg2);border:1px solid var(--bdd);border-radius:16px;overflow:hidden}
+.table-filters{padding:16px 20px;border-bottom:1px solid var(--bdd);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.search-input{background:var(--bg3);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 14px;color:var(--tx);font-family:var(--fm);font-size:13px;outline:none;width:240px;transition:.3s}
+.search-input:focus{border-color:var(--g);box-shadow:0 0 0 2px rgba(0,200,83,.1)}
+.search-input::placeholder{color:var(--txm)}
+.filter-select{background:var(--bg3);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 14px;color:var(--tx);font-family:var(--fm);font-size:13px;outline:none;cursor:pointer}
+.filter-select option{background:var(--bg3)}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--bg3);border-bottom:1px solid var(--bdd)}
+th{padding:12px 16px;text-align:left;font-size:10.5px;font-weight:700;color:var(--txm);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.03);transition:background .2s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(0,200,83,.03)}
+td{padding:13px 16px;font-size:13px;color:var(--txd)}
+td.name-cell{font-weight:700;color:var(--tx)}
+td.wallet-cell{color:var(--g);font-weight:600}
+td.code-cell{font-weight:700;letter-spacing:2px;color:var(--warn)}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:10.5px;font-weight:700}
+.badge-g{background:rgba(0,200,83,.12);color:var(--g);border:1px solid rgba(0,200,83,.2)}
+.badge-r{background:rgba(255,82,82,.12);color:var(--red);border:1px solid rgba(255,82,82,.2)}
+.row-actions{display:flex;gap:6px}
+.table-empty{padding:60px 20px;text-align:center;color:var(--txm)}
+.table-empty-ico{font-size:42px;margin-bottom:12px}
+.table-footer{padding:14px 20px;border-top:1px solid var(--bdd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.table-footer-txt{font-size:12px;color:var(--txm)}
+.pagination{display:flex;gap:6px}
+.pg-btn{width:32px;height:32px;border-radius:8px;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--txd);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s}
+.pg-btn:hover,.pg-btn.active{background:var(--g3);border-color:var(--bd);color:var(--g)}
+
+/* ═══ SETTINGS CARDS ═══ */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.setting-card{background:var(--bg2);border:1px solid var(--bdd);border-radius:16px;padding:24px 22px}
+.setting-card h3{font-size:14px;font-weight:800;color:var(--tx);margin-bottom:4px}
+.setting-card p{font-size:12px;color:var(--txm);margin-bottom:18px}
+.setting-field{margin-bottom:14px}
+.setting-field label{display:block;font-size:10.5px;font-weight:700;color:var(--g);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.setting-input{width:100%;background:var(--bg3);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 15px;color:var(--tx);font-family:var(--fm);font-size:14px;outline:none;transition:.3s}
+.setting-input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(0,200,83,.1)}
+.setting-input option{background:var(--bg3)}
+.setting-save{width:100%;background:var(--g);color:#0C0E0C;font-family:var(--fm);font-size:13px;font-weight:800;padding:12px;border-radius:9px;border:none;cursor:pointer;transition:.3s;margin-top:4px}
+.setting-save:hover{background:var(--g2)}
+
+/* ═══ WINNER SECTION ═══ */
+.winner-card{background:var(--bg2);border:1px solid var(--bdd);border-radius:16px;padding:28px 24px;margin-bottom:20px}
+.winner-result{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:24px;text-align:center;display:none}
+.winner-result.show{display:block}
+.winner-trophy{font-size:52px;margin-bottom:12px}
+.winner-name{font-size:24px;font-weight:800;color:var(--tx);margin-bottom:6px}
+.winner-detail{font-size:13px;color:var(--txd);margin-bottom:4px}
+.winner-detail span{color:var(--g);font-weight:600}
+
+/* ═══ ANNOUNCEMENT ═══ */
+.announce-card{background:var(--bg2);border:1px solid var(--bdd);border-radius:16px;padding:24px 22px;margin-bottom:20px}
+
+/* ═══ CONFIRM MODAL ═══ */
+.modal-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:32px 28px;max-width:380px;width:100%;text-align:center}
+.modal-ico{font-size:44px;margin-bottom:14px}
+.modal h3{font-size:18px;font-weight:800;color:var(--tx);margin-bottom:8px}
+.modal p{font-size:13px;color:var(--txd);line-height:1.7;margin-bottom:22px}
+.modal-btns{display:flex;gap:10px;justify-content:center}
+
+/* ═══ TOAST ═══ */
+.toast{position:fixed;bottom:24px;right:24px;z-index:99999;background:var(--bg2);border:1px solid var(--bd);color:var(--tx);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--sh);transform:translateY(80px);opacity:0;transition:all .3s;display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-ico{font-size:16px}
+
+/* ═══ MESSAGING ═══ */
+.msg-panel{position:fixed;top:0;right:-420px;width:400px;bottom:0;z-index:300;background:var(--bg2);border-left:1px solid var(--bd);box-shadow:-8px 0 32px rgba(0,0,0,.3);transition:right .3s;display:flex;flex-direction:column}
+.msg-panel.open{right:0}
+.msg-panel-head{padding:18px 18px 14px;border-bottom:1px solid var(--bdd);display:flex;align-items:center;gap:10px}
+.msg-panel-head h3{font-size:15px;font-weight:800;color:var(--tx);flex:1}
+.msg-close-btn{background:none;border:none;cursor:pointer;color:var(--txm);font-size:18px;padding:4px}
+.msg-user-info{padding:12px 16px;background:var(--bg3);border-bottom:1px solid var(--bdd);font-size:12px;color:var(--txd)}
+.msg-user-name{font-weight:800;color:var(--tx);font-size:14px;margin-bottom:2px}
+.msg-list-area{flex:1;overflow-y:auto;padding:14px 14px;display:flex;flex-direction:column;gap:9px}
+.msg-bubble{padding:9px 13px;border-radius:12px;font-size:13px;line-height:1.6;max-width:86%}
+.msg-bubble.from-admin{background:var(--g3);border:1px solid var(--bd);align-self:flex-start;color:#fff}
+.msg-bubble.from-user{background:var(--bg4);border:1px solid var(--bdd);align-self:flex-end;color:var(--tx)}
+.msg-bubble-who{font-size:10px;opacity:.7;margin-bottom:2px;font-weight:700}
+.msg-bubble-time{font-size:10px;opacity:.6;margin-top:3px}
+.msg-compose-area{padding:12px 14px;border-top:1px solid var(--bdd);display:flex;gap:8px}
+.msg-admin-inp{flex:1;background:var(--bg3);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 13px;color:var(--tx);font-family:var(--fm);font-size:13px;outline:none;transition:.3s;resize:none}
+.msg-admin-inp:focus{border-color:var(--g)}
+.msg-admin-send{background:var(--g);color:#0C0E0C;border:none;border-radius:10px;padding:10px 14px;font-family:var(--fm);font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap}
+.msg-admin-send:hover{background:var(--g2)}
+
+
+.spin{width:16px;height:16px;border:2px solid rgba(0,200,83,.2);border-top-color:var(--g);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ═══ UNREAD MSG BADGE ═══ */
+.unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:100px;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:0 4px;margin-left:4px;vertical-align:middle;animation:ubp 1.4s infinite}
+@keyframes ubp{0%,100%{box-shadow:0 0 0 0 rgba(255,82,82,.6)}60%{box-shadow:0 0 0 5px rgba(255,82,82,0)}}
+
+/* ═══ DELETE MSG MODAL ═══ */
+.delmsg-overlay{position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.85);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px}
+.delmsg-overlay.show{display:flex}
+.delmsg-box{background:var(--bg2);border:1px solid rgba(255,82,82,.3);border-radius:20px;padding:32px 28px;max-width:440px;width:100%;text-align:center}
+.delmsg-ico{font-size:44px;margin-bottom:12px}
+.delmsg-box h3{font-size:17px;font-weight:800;color:var(--tx);margin-bottom:8px}
+.delmsg-box p{font-size:12.5px;color:var(--txd);line-height:1.7;margin-bottom:12px}
+.delmsg-inp{width:100%;background:var(--bg3);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;color:var(--tx);font-family:var(--fm);font-size:13px;outline:none;resize:vertical;min-height:100px;margin-bottom:16px;line-height:1.6;text-align:left}
+.delmsg-inp:focus{border-color:rgba(255,82,82,.5);box-shadow:0 0 0 3px rgba(255,82,82,.1)}
+.delmsg-btns{display:flex;gap:10px;justify-content:center}
+
+/* ═══ MOBILE SIDEBAR TOGGLE ═══ */
+.mob-toggle{display:none;position:fixed;top:11px;left:11px;z-index:200;width:40px;height:40px;background:var(--g);border-radius:10px;border:none;cursor:pointer;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 12px rgba(0,200,83,.3)}
+.sidebar-overlay{display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.55)}
+.sidebar-overlay.show{display:block}
+
+@media(max-width:900px){
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .settings-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);z-index:101}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .mob-toggle{display:flex}
+  .topbar{padding:0 16px 0 62px}
+  .content{padding:14px}
+  .stat-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-card{padding:16px 14px}
+  .table-filters{flex-direction:column;align-items:stretch;gap:8px}
+  .search-input{width:100%}
+  .table-scroll{-webkit-overflow-scrolling:touch}
+  .sec-hdr{flex-wrap:wrap;gap:8px}
+  .settings-grid{grid-template-columns:1fr}
+  .msg-panel{width:100%;right:-100%}
+  .msg-panel.open{right:0}
+}
+@media(max-width:480px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .topbar-title{font-size:14px}
+  .modal{padding:24px 18px;border-radius:14px}
+  td{padding:10px 12px;font-size:12px}
+  th{padding:10px 12px;font-size:9.5px}
+  .btn{padding:7px 12px;font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="toast-ico" id="toast-ico">✅</span><span id="toast-msg"></span></div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-ico" id="modal-ico">⚠️</div>
+    <h3 id="modal-title">Are you sure?</h3>
+    <p id="modal-msg">Yeh action undo nahi ho sakta.</p>
+    <div class="modal-btns">
+      <button class="btn btn-o" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-r" id="modal-confirm-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE TOGGLE -->
+<button class="mob-toggle" id="mob-toggle" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- ═══ LOGIN PAGE ═══ -->
+<div class="login-pg" id="login-pg">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="https://res.cloudinary.com/dwakflgxg/image/upload/v1775415386/eq4zjn1h2nvxv3w1om13.png" alt="SofiZona" style="width:56px;height:56px;border-radius:16px;object-fit:cover;box-shadow:0 8px 24px rgba(0,200,83,.3);display:block;margin:0 auto 12px;">
+      <h1>SofiZona</h1>
+      <p>Admin Panel · Secure Access</p>
+    </div>
+    <div class="login-field">
+      <label>Email</label>
+      <input type="email" class="login-input" id="login-user" placeholder="admin@gmail.com" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" class="login-input" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Login to Admin Panel</button>
+    <div class="login-err" id="login-err">Email ya password galat hai</div>
+  </div>
+</div>
+
+<!-- ═══ MAIN APP ═══ -->
+<div class="app" id="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-wrap">
+        <img src="https://res.cloudinary.com/dwakflgxg/image/upload/v1775415386/eq4zjn1h2nvxv3w1om13.png" alt="SofiZona" style="width:36px;height:36px;border-radius:10px;object-fit:cover;">
+        <div>
+          <div class="sb-logo-txt">Sofi<em>Zona</em></div>
+          <div class="sb-logo-sub">Admin Panel</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-sec-lbl">Overview</div>
+        <div class="nav-item active" onclick="showPanel('dashboard',this)">
+          <div class="nav-item-ico">📊</div>Dashboard
+        </div>
+        <div class="nav-item" onclick="showPanel('entries',this)">
+          <div class="nav-item-ico">👥</div>Entries
+          <span id="nav-count" style="margin-left:auto;background:var(--g3);border:1px solid var(--bd);border-radius:100px;padding:1px 8px;font-size:10px;font-weight:700;color:var(--g)">0</span>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-sec-lbl">Management</div>
+        <div class="nav-item" onclick="showPanel('winner',this)">
+          <div class="nav-item-ico">🏆</div>Winner Select
+        </div>
+        <div class="nav-item" onclick="showPanel('announce',this)">
+          <div class="nav-item-ico">📢</div>Announcements
+        </div>
+        <div class="nav-item" onclick="showPanel('settings',this)">
+          <div class="nav-item-ico">⚙️</div>Settings
+        </div>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="logout-btn" onclick="doLogout()">
+        <div class="nav-item-ico" style="background:rgba(255,82,82,.1)">🚪</div>Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-right">
+        <div class="topbar-badge"><div class="tb-dot"></div>Live</div>
+        <div style="font-size:12px;color:var(--txm)">SofiZona Giveaway</div>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- ═══ DASHBOARD ═══ -->
+      <div class="panel-pg active" id="panel-dashboard">
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-card-ico green">👥</div>
+            </div>
+            <div class="stat-card-num" id="d-total">—</div>
+            <div class="stat-card-lbl">Total Participants</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-card-ico warn">🏆</div>
+            </div>
+            <div class="stat-card-num" id="d-prize">—</div>
+            <div class="stat-card-lbl">Current Prize</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-card-ico blue">⏱</div>
+            </div>
+            <div class="stat-card-num" id="d-timer">—</div>
+            <div class="stat-card-lbl">Time Remaining</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-top">
+              <div class="stat-card-ico green">📅</div>
+            </div>
+            <div class="stat-card-num" id="d-today">—</div>
+            <div class="stat-card-lbl">Today's Entries</div>
+          </div>
+        </div>
+
+        <!-- Recent Entries -->
+        <div class="sec-hdr">
+          <div class="sec-hdr-left">
+            <h2>Recent Entries</h2>
+            <p>Latest participants</p>
+          </div>
+          <button class="btn btn-o btn-sm" onclick="var el=document.querySelector('.nav-item[onclick*=entries]');showPanel('entries',el)">View All →</button>
+        </div>
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>#</th><th>Naam</th><th>Wallet</th><th>Number</th><th>Waqt</th></tr></thead>
+              <tbody id="recent-tbody">
+                <tr><td colspan="5"><div class="table-empty"><div class="table-empty-ico">⏳</div><div>Loading...</div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Wallet Stats -->
+        <div style="margin-top:24px">
+          <div class="sec-hdr">
+            <div class="sec-hdr-left"><h2>Wallet Breakdown</h2><p>Kis wallet ka ziada use</p></div>
+          </div>
+          <div id="wallet-stats" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px">
+            <div style="padding:20px;text-align:center;color:var(--txm);font-size:13px">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ENTRIES ═══ -->
+      <div class="panel-pg" id="panel-entries">
+        <div class="sec-hdr">
+          <div class="sec-hdr-left">
+            <h2>All Entries</h2>
+            <p id="entries-count-txt">Loading...</p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-b btn-sm" onclick="exportCSV()">📥 Export CSV</button>
+            <button class="btn btn-r btn-sm" onclick="confirmDeleteAll()">🗑 Delete All</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-filters">
+            <input type="text" class="search-input" placeholder="🔍 Naam ya number search karein..." oninput="filterEntries(this.value)" id="search-inp">
+            <select class="filter-select" onchange="filterByWallet(this.value)" id="wallet-filter">
+              <option value="">All Wallets</option>
+              <option>EasyPaisa</option><option>JazzCash</option><option>SadaPay</option>
+              <option>NayaPay</option><option>HBL Mobile</option><option>Meezan Bank</option>
+              <option>UBL Omni</option><option>MCB Lite</option><option>Bank Alfalah</option>
+            </select>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>#</th><th>Naam</th><th>Wallet</th><th>Number</th><th>Backup</th><th>Secret Code</th><th>Waqt</th><th>Action</th></tr></thead>
+              <tbody id="entries-tbody">
+                <tr><td colspan="8"><div class="table-empty"><div class="table-empty-ico">⏳</div><div>Loading entries...</div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <div class="table-footer-txt" id="entries-footer">0 entries</div>
+            <div class="pagination" id="pagination"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ WINNER ═══ -->
+      <div class="panel-pg" id="panel-winner">
+        <div class="sec-hdr">
+          <div class="sec-hdr-left"><h2>Winner Selection</h2><p>Random lucky draw — website par automatically announce hoga</p></div>
+        </div>
+
+        <!-- CURRENT WINNER DISPLAY -->
+        <div class="winner-card" id="current-winner-card" style="display:none;border:1px solid rgba(255,200,0,.3);background:linear-gradient(135deg,rgba(255,215,0,.06),rgba(0,200,83,.04))">
+          <h3 style="font-size:14px;font-weight:800;color:var(--warn);margin-bottom:4px">🏆 Current Announced Winner</h3>
+          <p style="font-size:12px;color:var(--txm);margin-bottom:16px">Website par currently yeh winner show ho raha hai</p>
+          <div style="background:var(--bg3);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;margin-bottom:14px">
+            <div style="font-size:20px;font-weight:800;color:var(--tx);margin-bottom:6px" id="cw-name">—</div>
+            <div style="font-size:13px;color:var(--g);margin-bottom:3px" id="cw-wallet">—</div>
+            <div style="font-size:12px;color:var(--txm);margin-bottom:3px" id="cw-num">—</div>
+            <div style="font-size:12px;color:var(--warn)" id="cw-prize">—</div>
+          </div>
+          <button class="btn btn-r" onclick="deleteCurrentWinner()" style="width:100%;justify-content:center">🗑 Winner Hatao — Naya Round Shuru Karein</button>
+        </div>
+
+        <!-- Random Draw -->
+        <div class="winner-card" style="margin-bottom:16px">
+          <h3 style="font-size:14px;font-weight:800;color:var(--tx);margin-bottom:4px">🎲 Random Draw</h3>
+          <p style="font-size:12px;color:var(--txm);margin-bottom:16px">Button dabao — saari entries mein se ek random winner select hoga</p>
+          <button class="btn btn-g" onclick="selectWinner()" style="font-size:14px;padding:14px 32px">🎲 Random Winner Select Karo</button>
+          <div class="winner-result" id="winner-result" style="margin-top:20px">
+            <div class="winner-trophy">🏆</div>
+            <div class="winner-name" id="w-name">—</div>
+            <div class="winner-detail">Wallet: <span id="w-wallet" style="color:var(--g)">—</span></div>
+            <div class="winner-detail">Number: <span id="w-num">—</span></div>
+            <div class="winner-detail">Secret Code: <span id="w-code" style="color:var(--warn)">—</span></div>
+            <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+              <button class="btn btn-o" onclick="selectWinner()">🔄 Dobara Select Karo</button>
+              <button class="btn btn-g" onclick="announceWinner()">📢 Website Par Announce Karo</button>
+            </div>
+          </div>
+        </div>
+        <!-- Manual Winner -->
+        <div class="winner-card">
+          <h3 style="font-size:14px;font-weight:800;color:var(--tx);margin-bottom:4px">✍️ Manual Winner Announce</h3>
+          <p style="font-size:12px;color:var(--txm);margin-bottom:16px">Khud winner ka naam likhein aur announce karein</p>
+          <div class="setting-field">
+            <label>Winner Ka Naam</label>
+            <input type="text" class="setting-input" id="man-winner-name" placeholder="Jaise: Muhammad Ali Khan">
+          </div>
+          <div class="setting-field">
+            <label>Wallet</label>
+            <input type="text" class="setting-input" id="man-winner-wallet" placeholder="Jaise: EasyPaisa">
+          </div>
+          <button class="btn btn-g" onclick="manualAnnounceWinner()" style="margin-top:4px">🏆 Winner Announce Karo</button>
+        </div>
+      </div>
+
+      <!-- ANNOUNCEMENTS -->
+      <div class="panel-pg" id="panel-announce">
+        <div class="sec-hdr">
+          <div class="sec-hdr-left"><h2>Announcements</h2><p>Giveaway website par popup message bhejo</p></div>
+        </div>
+        <div class="announce-card" style="margin-bottom:16px">
+          <h3 style="font-size:14px;font-weight:800;color:var(--tx);margin-bottom:4px">📢 Naya Announcement</h3>
+          <p style="font-size:12px;color:var(--txm);margin-bottom:16px">Yeh message giveaway website par turant popup ke tor par show hoga</p>
+          <div class="setting-field">
+            <label>Message</label>
+            <textarea class="setting-input" id="ann-msg" rows="3" placeholder="Jaise: Draw kal hoga! Tayar raho..."></textarea>
+          </div>
+          <div class="setting-field">
+            <label>Type</label>
+            <select class="setting-input" id="ann-type">
+              <option value="info">📢 Info — General message</option>
+              <option value="success">✅ Success — Khushkhabri</option>
+              <option value="warning">⚠️ Warning — Zaroori notice</option>
+            </select>
+          </div>
+          <button class="btn btn-g" onclick="sendAnnouncement()">📢 Website Par Bhejo</button>
+        </div>
+        <div class="sec-hdr">
+          <div class="sec-hdr-left"><h2>Active Announcements</h2><p>Abhi website par show ho rahe hain</p></div>
+          <button class="btn btn-r btn-sm" onclick="deleteAllAnn()">🗑 Sab Delete</button>
+        </div>
+        <div id="ann-list" style="display:flex;flex-direction:column;gap:10px">
+          <div style="color:var(--txm);font-size:13px">Loading...</div>
+        </div>
+      </div>
+
+      <!-- ═══ SETTINGS ═══ -->
+      <div class="panel-pg" id="panel-settings">
+        <div class="sec-hdr">
+          <div class="sec-hdr-left"><h2>Giveaway Settings</h2><p>Sab kuch control karein</p></div>
+        </div>
+        <div class="settings-grid">
+          <!-- Prize Settings -->
+          <div class="setting-card">
+            <h3>💰 Prize Amount</h3>
+            <p>Giveaway prize amount change karein</p>
+            <div class="setting-field">
+              <label>Prize Amount</label>
+              <input type="text" class="setting-input" id="set-prize" placeholder="PKR 100">
+            </div>
+            <button class="setting-save" onclick="saveSetting('prize', document.getElementById('set-prize').value)">Prize Save Karo</button>
+          </div>
+          <!-- Timer Settings -->
+          <div class="setting-card">
+            <h3>⏱ Draw Timer</h3>
+            <p>Countdown timer reset karein</p>
+            <div class="setting-field">
+              <label>Din (Days)</label>
+              <input type="number" class="setting-input" id="set-days" placeholder="3" min="1" max="30">
+            </div>
+            <div class="setting-field">
+              <label>Ghante (Hours)</label>
+              <input type="number" class="setting-input" id="set-hours" placeholder="0" min="0" max="23">
+            </div>
+            <button class="setting-save" onclick="saveTimer()">Timer Reset Karo</button>
+          </div>
+          <!-- Status -->
+          <div class="setting-card">
+            <h3>🔴 Giveaway Status</h3>
+            <p>Giveaway active ya band karein</p>
+            <div class="setting-field">
+              <label>Status</label>
+              <select class="setting-input" id="set-status">
+                <option value="active">✅ Active — Entries Open</option>
+                <option value="closed">🔒 Closed — No More Entries</option>
+                <option value="ended">🏁 Ended — Draw Complete</option>
+              </select>
+            </div>
+            <button class="setting-save" onclick="saveSetting('status', document.getElementById('set-status').value)">Status Save Karo</button>
+          </div>
+          <!-- Danger Zone -->
+          <div class="setting-card" style="border-color:rgba(255,82,82,.2)">
+            <h3 style="color:var(--red)">⚠️ Danger Zone</h3>
+            <p>Yeh actions permanent hain</p>
+            <button class="btn btn-r" style="width:100%;justify-content:center;margin-bottom:10px" onclick="confirmDeleteAll()">🗑 Sari Entries Delete Karo</button>
+            <button class="btn btn-r" style="width:100%;justify-content:center;margin-bottom:10px" onclick="confirmResetTimer()">🔄 Timer Reset + New Draw</button>
+            <button class="btn" style="width:100%;justify-content:center;background:rgba(255,179,0,.12);color:var(--warn);border:1px solid rgba(255,179,0,.2)" onclick="clearBannedList()">🆕 New Giveaway — Banned List Clear Karo</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+<!-- MESSAGING SLIDE PANEL -->
+<div class="msg-panel" id="msg-panel">
+  <div class="msg-panel-head">
+    <span style="font-size:20px">💬</span>
+    <h3 id="msg-panel-title">Message</h3>
+    <button class="msg-close-btn" onclick="closeMsgPanel()">✕</button>
+  </div>
+  <div class="msg-user-info">
+    <div class="msg-user-name" id="msg-panel-title2"></div>
+    <div id="msg-panel-sub" style="color:var(--txm);font-size:11px"></div>
+  </div>
+  <div class="msg-list-area" id="msg-list-area"></div>
+  <div class="msg-compose-area">
+    <textarea class="msg-admin-inp" id="msg-admin-inp" rows="2" placeholder="Admin ke tor par message likhein..."></textarea>
+    <button class="msg-admin-send" onclick="sendAdminMessage()">Send</button>
+  </div>
+</div>
+</div><!-- /app -->
+
+<!-- SUSPEND MODAL -->
+<div class="modal-overlay" id="susp-modal" style="z-index:10000">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-ico">🚫</div>
+    <h3>Entry Suspend Karein</h3>
+    <p style="margin-bottom:10px"><strong id="susp-modal-name"></strong> ki entry suspend hogi. User ko yeh message dikhega:</p>
+    <textarea id="susp-msg-inp" style="width:100%;background:var(--bg3);border:1.5px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;color:var(--tx);font-family:var(--fm);font-size:13px;outline:none;resize:vertical;min-height:90px;margin-bottom:16px;line-height:1.6"></textarea>
+    <div class="modal-btns">
+      <button class="btn btn-o" onclick="closeSuspModal()">Cancel</button>
+      <button class="btn btn-r" onclick="confirmSuspend()">🚫 Suspend Karo</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE SINGLE ENTRY MODAL -->
+<div class="delmsg-overlay" id="del-single-modal">
+  <div class="delmsg-box">
+    <div class="delmsg-ico">🗑️</div>
+    <h3>Entry Delete Karein?</h3>
+    <p><strong id="del-single-name"></strong> ki entry permanently delete ho jaayegi. Is giveaway mein yeh number dobara register nahi kar paayega.</p>
+    <div class="delmsg-btns" style="margin-top:20px">
+      <button class="btn btn-o" onclick="closeDelSingleModal()">Cancel</button>
+      <button class="btn btn-r" onclick="confirmDelSingle()">🗑 Delete Karo</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE ALL ENTRIES MODAL -->
+<div class="delmsg-overlay" id="del-all-modal">
+  <div class="delmsg-box">
+    <div class="delmsg-ico">⚠️</div>
+    <h3>Sari Entries Delete Karein?</h3>
+    <p>Saari entries permanently delete ho jaayengi. Koi bhi number is giveaway mein dobara register nahi kar paayega.</p>
+    <div class="delmsg-btns" style="margin-top:20px">
+      <button class="btn btn-o" onclick="closeDelAllModal()">Cancel</button>
+      <button class="btn btn-r" onclick="confirmDelAll()">🗑 Sab Delete Karo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase - compat version with defer -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+// ═══ STATE ═══
+var db = null;
+var auth = null;
+var allEntries = [];
+var filteredEntries = [];
+var curPage = 1;
+var perPage = 20;
+var currentWinner = null;
+var modalCallback = null;
+
+// ═══ FIREBASE SAFE INIT ═══
+var firebaseConfig = {
+  apiKey: "AIzaSyAJYh57oa9em7D0YP0KQArIInQU8XrAcbw",
+  authDomain: "sufizona-7e799.firebaseapp.com",
+  projectId: "sufizona-7e799",
+  storageBucket: "sufizona-7e799.firebasestorage.app",
+  messagingSenderId: "496273347958",
+  appId: "1:496273347958:web:d3ecfc641cd8ee6f1a5657"
+};
+function initFirebase(){
+  try {
+    if(typeof firebase === 'undefined'){
+      console.error('Firebase CDN load nahi hua');
+      var errEl = document.getElementById('login-err');
+      if(errEl){ errEl.textContent = 'Network error! Internet check karein aur reload karein.'; errEl.classList.add('show'); }
+      return false;
+    }
+    if(!firebase.apps.length){
+      firebase.initializeApp(firebaseConfig);
+    }
+    if(!db){
+      db = firebase.firestore();
+      // Admin panel mein persistence OFF — hamesha fresh data chahiye
+    }
+    if(!auth) auth = firebase.auth();
+    return true;
+  } catch(e) {
+    console.error('Firebase init error:', e);
+    return false;
+  }
+}
+
+// ═══ LOGIN ═══
+function doLogin(){
+  var email = document.getElementById('login-user').value.trim();
+  var pass = document.getElementById('login-pass').value;
+  var errEl = document.getElementById('login-err');
+  var btn = document.querySelector('.login-btn');
+
+  if(!email || !pass){
+    errEl.textContent = 'Email aur password dono likhein';
+    errEl.classList.add('show');
+    return;
+  }
+
+  if(!initFirebase()) return;
+
+  btn.textContent = 'Logging in...';
+  btn.disabled = true;
+
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(function(userCred){
+      // Token fresh karo — email_verified rules mein check hoti hai
+      return userCred.user.getIdToken(true);
+    })
+    .then(function(){
+      btn.textContent = 'Login to Admin Panel';
+      btn.disabled = false;
+      document.getElementById('login-pg').style.display = 'none';
+      document.getElementById('app').classList.add('active');
+      initApp();
+    })
+    .catch(function(err){
+      btn.textContent = 'Login to Admin Panel';
+      btn.disabled = false;
+      errEl.textContent = 'Email ya password galat hai';
+      errEl.classList.add('show');
+      setTimeout(function(){errEl.classList.remove('show');}, 3000);
+    });
+}
+
+function doLogout(){
+  if(auth) auth.signOut();
+  document.getElementById('app').classList.remove('active');
+  document.getElementById('login-pg').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+}
+
+// Check auth state on page load
+function startAuthListener(){
+  if(!initFirebase()) return;
+  auth.onAuthStateChanged(function(user){
+    if(user){
+      // Token fresh karo taake email_verified claim rules mein kaam kare
+      user.getIdToken(true).then(function(){
+        document.getElementById('login-pg').style.display = 'none';
+        document.getElementById('app').classList.add('active');
+        initApp();
+      }).catch(function(e){
+        console.error('Token refresh fail:', e);
+        // Phir bhi try karo
+        document.getElementById('login-pg').style.display = 'none';
+        document.getElementById('app').classList.add('active');
+        initApp();
+      });
+    }
+  });
+}
+if(document.readyState === 'loading'){
+  window.addEventListener('DOMContentLoaded', startAuthListener);
+} else {
+  startAuthListener();
+}
+
+// ═══ INIT APP ═══
+function initApp(){
+  loadEntries();
+  loadSettings();
+  loadAnnouncements();
+  loadCurrentWinner();
+  startDashTimer();
+}
+
+// ═══ PANEL SWITCH ═══
+function showPanel(id, el){
+  document.querySelectorAll('.panel-pg').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('panel-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  if(el) el.classList.add('active');
+  var titles = {dashboard:'Dashboard',entries:'All Entries',winner:'Winner Selection',announce:'Announcements',settings:'Settings'};
+  document.getElementById('topbar-title').textContent = titles[id] || id;
+  if(window.innerWidth < 768){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('show');
+  }
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('show');
+}
+
+// ═══ TOAST ═══
+function toast(msg, ico, dur){
+  var t=document.getElementById('toast');
+  document.getElementById('toast-ico').textContent = ico||'✅';
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){t.classList.remove('show');}, dur||2800);
+}
+
+// ═══ LOAD ENTRIES ═══
+function loadEntries(){
+  db.collection('giveaway_entries').orderBy('timestamp','desc').onSnapshot(function(snap){
+    allEntries = [];
+    var todayStart = new Date(); todayStart.setHours(0,0,0,0);
+    var todayCount = 0;
+    snap.forEach(function(doc){
+      var d = doc.data();
+      d._id = doc.id;
+      allEntries.push(d);
+      if(d.timestamp && d.timestamp.toDate() >= todayStart) todayCount++;
+    });
+
+    // Update counts
+    var total = allEntries.length;
+    document.getElementById('d-total').textContent = total.toLocaleString();
+    document.getElementById('d-today').textContent = todayCount;
+    document.getElementById('nav-count').textContent = total;
+    document.getElementById('entries-count-txt').textContent = total + ' total entries';
+
+    // Wallet filter options
+    updateWalletFilter();
+    // Render
+    filteredEntries = allEntries.slice();
+    renderEntries();
+    renderRecent();
+    renderWalletStats();
+  }, function(err){
+    console.error('Entries load error:', err);
+    toast('Entries load nahi hui — internet check karein', '❌', 4000);
+  });
+}
+
+function loadSettings(){
+  db.collection('settings').doc('giveaway').onSnapshot(function(doc){
+    if(doc.exists){
+      var d = doc.data();
+      if(d.prize){
+        document.getElementById('d-prize').textContent = d.prize;
+        document.getElementById('set-prize').value = d.prize;
+      }
+      if(d.status) document.getElementById('set-status').value = d.status;
+    }
+  });
+}
+
+// ═══ DASHBOARD TIMER ═══
+function startDashTimer(){
+  var stored = localStorage.getItem('sz_de');
+  var drawEnd = stored ? parseInt(stored) : Date.now() + (3*24*60*60*1000);
+  function upd(){
+    var diff = Math.max(0, drawEnd - Date.now());
+    var d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000);
+    var m=Math.floor((diff%3600000)/60000);
+    document.getElementById('d-timer').textContent = d+'d '+pad(h)+'h '+pad(m)+'m';
+  }
+  upd(); setInterval(upd, 60000);
+}
+function pad(n){return n<10?'0'+n:''+n;}
+
+// ═══ RENDER RECENT ═══
+function renderRecent(){
+  var tbody = document.getElementById('recent-tbody');
+  var recent = allEntries.slice(0, 5);
+  if(!recent.length){
+    tbody.innerHTML = '<tr><td colspan="5"><div class="table-empty"><div class="table-empty-ico">📭</div><div>Koi entry nahi hai abhi tak</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = recent.map(function(e, i){
+    var time = e.timestamp ? e.timestamp.toDate().toLocaleString('en-PK', {dateStyle:'short', timeStyle:'short'}) : '—';
+    return '<tr><td>'+(i+1)+'</td><td class="name-cell">'+esc(e.name)+'</td><td class="wallet-cell">'+esc(e.wallet)+'</td><td>'+maskNum(e.num)+'</td><td>'+time+'</td></tr>';
+  }).join('');
+}
+
+// ═══ RENDER ENTRIES TABLE ═══
+function renderEntries(){
+  var tbody = document.getElementById('entries-tbody');
+  var total = filteredEntries.length;
+  var start = (curPage-1)*perPage;
+  var pageData = filteredEntries.slice(start, start+perPage);
+  document.getElementById('entries-footer').textContent = total + ' entries (' + Math.ceil(total/perPage) + ' pages)';
+  renderPagination(total);
+  if(!pageData.length){
+    tbody.innerHTML = '<tr><td colspan="8"><div class="table-empty"><div class="table-empty-ico">🔍</div><div>Koi entry nahi mili</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = pageData.map(function(e, idx){
+    var i = start + idx + 1;
+    var time = e.timestamp ? e.timestamp.toDate().toLocaleString('en-PK', {dateStyle:'short', timeStyle:'short'}) : '—';
+    var isSusp = e.suspended ? ' style="opacity:.55"' : '';
+    var suspBadge = e.suspended ? '<span style="font-size:10px;background:rgba(255,82,82,.15);color:var(--red);border:1px solid rgba(255,82,82,.3);border-radius:100px;padding:1px 7px;margin-left:5px">Suspended</span>' : '';
+    var editBadge = e.updatedBy==='user' ? '<span style="font-size:9px;background:rgba(255,179,0,.12);color:var(--warn);border:1px solid rgba(255,179,0,.2);border-radius:100px;padding:1px 6px;margin-left:4px" title="User ne edit kiya">Edited</span>' : '';
+    var unread = e.unreadMsgCount && e.unreadMsgCount > 0 ? '<span class="unread-badge">'+e.unreadMsgCount+'</span>' : '';
+    return '<tr'+isSusp+'><td>'+i+'</td>'
+      +'<td class="name-cell">'+esc(e.name)+suspBadge+editBadge+'</td>'
+      +'<td class="wallet-cell">'+esc(e.wallet)+'</td>'
+      +'<td>'+maskNum(e.num)+'</td>'
+      +'<td style="color:var(--txm)">'+(e.num2||'—')+'</td>'
+      +'<td class="code-cell">'+esc(e.code)+'</td>'
+      +'<td style="color:var(--txm);font-size:12px">'+time+'</td>'
+      +'<td><div class="row-actions">'
+        +'<button class="btn btn-b btn-sm" onclick="viewEntry(\''+e._id+'\')" title="Detail Dekho">👁</button>'
+        +'<button class="btn btn-g btn-sm" onclick="makeWinnerFromEntry(\''+e._id+'\')" title="Is bande ko Winner banao" style="background:rgba(255,200,0,.15);color:var(--warn);border:1px solid rgba(255,200,0,.3)">🏆</button>'
+        +'<button class="btn btn-g btn-sm" onclick="msgWinnerEntry(\''+e._id+'\',\''+esc(e.name)+'\','+!!e.isWinner+')" title="Message Bhejo (sirf winner ko)" style="position:relative">💬'+unread+'</button>'
+        +'<button class="btn btn-sm" style="background:rgba(255,179,0,.12);color:var(--warn);border:1px solid rgba(255,179,0,.2)" onclick="suspendEntry(\''+e._id+'\',\''+esc(e.name)+'\','+!!e.suspended+')" title="Suspend/Unsuspend">🚫</button>'
+        +'<button class="btn btn-r btn-sm" onclick="openDelSingle(\''+e._id+'\',\''+esc(e.name)+'\')" title="Delete Karo">🗑</button>'
+      +'</div></td></tr>';
+  }).join('');
+}
+
+function renderPagination(total){
+  var pages = Math.ceil(total/perPage);
+  var pag = document.getElementById('pagination');
+  if(pages <= 1){pag.innerHTML='';return;}
+  var html = '';
+  for(var i=1;i<=Math.min(pages,8);i++){
+    html += '<button class="pg-btn'+(i===curPage?' active':'')+'" onclick="goPage('+i+')">'+i+'</button>';
+  }
+  pag.innerHTML = html;
+}
+
+function goPage(n){curPage=n;renderEntries();}
+
+// ═══ WALLET STATS ═══
+function renderWalletStats(){
+  var counts = {};
+  allEntries.forEach(function(e){counts[e.wallet] = (counts[e.wallet]||0)+1;});
+  var sorted = Object.entries(counts).sort(function(a,b){return b[1]-a[1];});
+  var total = allEntries.length || 1;
+  var html = sorted.map(function(item){
+    var pct = Math.round(item[1]/total*100);
+    return '<div style="background:var(--bg2);border:1px solid var(--bdd);border-radius:12px;padding:16px 14px"><div style="font-size:12px;font-weight:700;color:var(--g);margin-bottom:6px">'+esc(item[0])+'</div><div style="font-size:22px;font-weight:800;color:var(--tx)">'+item[1]+'</div><div style="font-size:11px;color:var(--txm)">'+pct+'%</div><div style="height:3px;background:var(--bg3);border-radius:2px;margin-top:8px"><div style="height:3px;background:var(--g);border-radius:2px;width:'+pct+'%"></div></div></div>';
+  }).join('');
+  document.getElementById('wallet-stats').innerHTML = html || '<div style="color:var(--txm);font-size:13px">No data yet</div>';
+}
+
+function updateWalletFilter(){
+  var wallets = [...new Set(allEntries.map(function(e){return e.wallet;}))];
+  var sel = document.getElementById('wallet-filter');
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">All Wallets</option>' + wallets.map(function(w){return '<option value="'+esc(w)+'"'+(w===cur?' selected':'')+'>'+esc(w)+'</option>';}).join('');
+}
+
+// ═══ SEARCH & FILTER ═══
+function filterEntries(q){
+  curPage = 1;
+  var wallet = document.getElementById('wallet-filter').value;
+  filteredEntries = allEntries.filter(function(e){
+    var matchQ = !q || e.name.toLowerCase().includes(q.toLowerCase()) || e.num.includes(q) || (e.code && e.code.includes(q));
+    var matchW = !wallet || e.wallet === wallet;
+    return matchQ && matchW;
+  });
+  renderEntries();
+}
+function filterByWallet(w){
+  curPage = 1;
+  var q = document.getElementById('search-inp').value;
+  filteredEntries = allEntries.filter(function(e){
+    var matchQ = !q || e.name.toLowerCase().includes(q.toLowerCase()) || e.num.includes(q);
+    var matchW = !w || e.wallet === w;
+    return matchQ && matchW;
+  });
+  renderEntries();
+}
+
+// ═══ MESSAGING PANEL ═══
+var activeMsgDocId=null,activeMsgName=null,msgPanelUnsub=null;
+function msgEntry(id,name){
+  activeMsgDocId=id;activeMsgName=name;
+  document.getElementById('msg-panel-title').textContent=name;
+  document.getElementById('msg-panel-sub').textContent='ID: '+id.slice(0,10)+'...';
+  document.getElementById('msg-admin-inp').value='';
+  document.getElementById('msg-list-area').innerHTML='<div style="color:var(--txm);font-size:12px;text-align:center;padding:20px">Loading...</div>';
+  document.getElementById('msg-panel').classList.add('open');
+  // Clear unread badge
+  db.collection('giveaway_entries').doc(id).update({unreadMsgCount:0}).catch(function(){});
+  if(msgPanelUnsub)msgPanelUnsub();
+  msgPanelUnsub=db.collection('giveaway_entries').doc(id)
+    .collection('messages').orderBy('time','asc')
+    .onSnapshot(function(snap){
+      var area=document.getElementById('msg-list-area');
+      if(snap.empty){area.innerHTML='<div style="color:var(--txm);font-size:12px;text-align:center;padding:20px">Koi message nahi abhi tak</div>';return;}
+      var html='';
+      snap.forEach(function(d){
+        var m=d.data(),isAdmin=m.from==='admin',t='';
+        if(m.time&&m.time.toDate){var dt=m.time.toDate();t=dt.toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit'});}
+        html+='<div class="msg-bubble '+(isAdmin?'from-admin':'from-user')+'">'
+          +'<div class="msg-bubble-who">'+(isAdmin?'Admin (You)':esc(m.userName||name))+'</div>'
+          +esc(m.text)+(t?'<div class="msg-bubble-time">'+t+'</div>':'')+'</div>';
+      });
+      area.innerHTML=html;area.scrollTop=area.scrollHeight;
+    });
+}
+function closeMsgPanel(){
+  document.getElementById('msg-panel').classList.remove('open');
+  if(msgPanelUnsub){msgPanelUnsub();msgPanelUnsub=null;}
+  activeMsgDocId=null;
+}
+function sendAdminMessage(){
+  if(!activeMsgDocId){toast('Koi entry select karein','❌');return;}
+  var inp=document.getElementById('msg-admin-inp');
+  var text=(inp.value||'').trim();
+  if(!text){toast('Message likhein!','❌');return;}
+  inp.value='';
+  inp.disabled=true;
+  db.collection('giveaway_entries').doc(activeMsgDocId)
+    .collection('messages').add({
+      text:text,
+      from:'admin',
+      userName:'SofiZona Team',
+      time:firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(function(){
+      // Update entry doc with latest message + reset unread count
+      db.collection('giveaway_entries').doc(activeMsgDocId).update({
+        message:text,
+        messageAt:firebase.firestore.FieldValue.serverTimestamp(),
+        unreadMsgCount:0
+      }).catch(function(e){console.error('update err:',e);});
+      inp.disabled=false;
+      toast(activeMsgName+' ko message bhej diya! ✅','✅');
+    }).catch(function(err){
+      inp.disabled=false;
+      inp.value=text; // restore text
+      console.error('sendAdminMessage error:',err);
+      toast('Message nahi gaya! (' + (err.code||'unknown') + ')','❌',4000);
+    });
+}
+// ═══ CURRENT WINNER MANAGEMENT ═══
+function loadCurrentWinner(){
+  db.collection('settings').doc('winner').onSnapshot(function(doc){
+    var card=document.getElementById('current-winner-card');
+    if(!doc.exists||!doc.data().name){if(card)card.style.display='none';return;}
+    var w=doc.data();
+    if(card){
+      card.style.display='block';
+      document.getElementById('cw-name').textContent='Winner: '+w.name;
+      document.getElementById('cw-wallet').textContent='Wallet: '+(w.wallet||'not set');
+      document.getElementById('cw-num').textContent='Number: '+(w.num||'not set');
+      document.getElementById('cw-prize').textContent='Prize: '+(w.prize||'not set');
+    }
+  });
+}
+function deleteCurrentWinner(){
+  openModal('🗑️','Winner Hatao?','Current winner website se remove ho jaayega. Naya round shuru kar sakte hain.',function(){
+    db.collection('settings').doc('winner').delete().then(function(){
+      db.collection('settings').doc('giveaway').set({status:'active'},{merge:true});
+      toast('Winner hata diya! Naya round shuru kar sakte hain ✅','✅');
+    }).catch(function(){toast('Error! Try again.','❌');});
+  });
+}
+// ═══ DELETE SINGLE (MODAL) ═══
+var _delSingleId = null;
+function openDelSingle(id, name){
+  _delSingleId = id;
+  document.getElementById('del-single-name').textContent = name;
+  document.getElementById('del-single-modal').classList.add('show');
+}
+function closeDelSingleModal(){
+  document.getElementById('del-single-modal').classList.remove('show');
+  _delSingleId = null;
+}
+function confirmDelSingle(){
+  if(!_delSingleId) return;
+  var id = _delSingleId;
+  closeDelSingleModal();
+  // Get entry data first to save banned number
+  var entry = allEntries.find(function(e){return e._id === id;});
+  var bannedNum = entry ? entry.num : null;
+  // Directly delete — no popup to user
+  db.collection('giveaway_entries').doc(id).delete().then(function(){
+    db.collection('settings').doc('stats').set({total: firebase.firestore.FieldValue.increment(-1)}, {merge:true}).catch(function(){});
+    // Save banned number so user cannot re-register in current giveaway
+    if(bannedNum){
+      db.collection('settings').doc('banned').set({
+        nums: firebase.firestore.FieldValue.arrayUnion(bannedNum)
+      }, {merge:true}).catch(function(){});
+    }
+    toast('Entry delete ho gayi ✅', '🗑');
+  }).catch(function(err){
+    console.error('Delete error:', err);
+    toast('Delete error! (' + (err.code||'unknown') + ')', '❌');
+  });
+}
+
+// ═══ DELETE ALL (MODAL) ═══
+function closeDelAllModal(){
+  document.getElementById('del-all-modal').classList.remove('show');
+}
+function confirmDeleteAll(){
+  document.getElementById('del-all-modal').classList.add('show');
+}
+function confirmDelAll(){
+  closeDelAllModal();
+  if(!allEntries.length){toast('Koi entry nahi hai!','❌');return;}
+  // Collect all numbers to ban
+  var allNums = allEntries.map(function(e){return e.num;}).filter(Boolean);
+  // Delete all entries directly
+  var batch = db.batch();
+  allEntries.forEach(function(e){
+    batch.delete(db.collection('giveaway_entries').doc(e._id));
+  });
+  toast('Entries delete ho rahi hain...', '🗑', 2000);
+  batch.commit().then(function(){
+    db.collection('settings').doc('stats').set({total:0},{merge:true}).catch(function(){});
+    // Ban all numbers
+    if(allNums.length){
+      db.collection('settings').doc('banned').set({
+        nums: firebase.firestore.FieldValue.arrayUnion.apply(null, allNums)
+      }, {merge:true}).catch(function(){});
+    }
+    toast('Sari entries delete ho gayin! ✅', '✅');
+  }).catch(function(err){
+    console.error('Delete all error:', err);
+    toast('Delete error! (' + (err.code||'unknown') + ')', '❌');
+  });
+}
+
+// ═══ SUSPEND ENTRY ═══
+var suspendDocId = null;
+function suspendEntry(id, name, isSuspended){
+  if(isSuspended){
+    // Unsuspend directly
+    db.collection('giveaway_entries').doc(id).update({suspended:false, suspendMsg:''}).then(function(){
+      toast(name+' ki entry unsuspend ho gayi!', '✅');
+    }).catch(function(){toast('Error! Try again.', '❌');});
+    return;
+  }
+  suspendDocId = id;
+  document.getElementById('susp-modal-name').textContent = name;
+  document.getElementById('susp-msg-inp').value = 'SofiZona ki janib se aapki entry suspend kar di gayi hai.\n\nAgar yeh ghalti hai toh SofiZona se rabta karein.';
+  document.getElementById('susp-modal').classList.add('show');
+}
+function closeSuspModal(){
+  document.getElementById('susp-modal').classList.remove('show');
+  suspendDocId=null;
+}
+function confirmSuspend(){
+  if(!suspendDocId) return;
+  var msg = document.getElementById('susp-msg-inp').value.trim();
+  db.collection('giveaway_entries').doc(suspendDocId).update({
+    suspended: true,
+    suspendMsg: msg,
+    suspendedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function(){
+    toast('Entry suspend ho gayi aur message bhej diya!', '🚫');
+    closeSuspModal();
+  }).catch(function(){toast('Error! Try again.', '❌');});
+}
+
+// ═══ VIEW ENTRY ═══
+function viewEntry(id){
+  var e = allEntries.find(function(x){return x._id===id;});
+  if(!e) return;
+  var time = e.timestamp ? e.timestamp.toDate().toLocaleString('en-PK') : '—';
+  openModal('👤', esc(e.name),
+    'Wallet: '+esc(e.wallet)+'\nNumber: '+e.num+'\nCode: '+e.code+'\nTime: '+time,
+    null, true);
+}
+
+// ═══ MAKE WINNER FROM ENTRY (List se directly winner banao) ═══
+function makeWinnerFromEntry(id){
+  var e = allEntries.find(function(x){return x._id===id;});
+  if(!e){toast('Entry nahi mili!','❌');return;}
+  openModal('🏆','Winner Confirm Karein?',e.name+' ko winner announce karein? Website par turant show hoga.',function(){
+    db.collection('settings').doc('winner').set({
+      name: e.name,
+      wallet: e.wallet||'—',
+      num: e.num||'—',
+      code: e.code||'—',
+      docId: e._id||'',
+      prize: document.getElementById('d-prize').textContent||'PKR 100',
+      announcedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(){
+      db.collection('giveaway_entries').doc(e._id).update({
+        isWinner: true,
+        winnerAnnouncedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).catch(function(err){console.error('isWinner set error:',err);});
+      toast(e.name+' ko winner announce kar diya! Website par show ho raha hai 🏆','🏆');
+    }).catch(function(err){
+      console.error('makeWinnerFromEntry error:',err);
+      if(err.code==='permission-denied'){
+        toast('Permission denied! Firebase Rules check karein.','❌',5000);
+      } else {
+        toast('Winner announce nahi hua! ('+(err.code||'unknown')+')','❌',4000);
+      }
+    });
+  });
+}
+
+// ═══ MESSAGING — SIRF WINNER KO ═══
+function msgWinnerEntry(id, name, isWinner){
+  if(!isWinner){
+    toast('Sirf winner ko message kar sakte hain! Pehle is bande ko winner banayein 🏆','⚠️',3500);
+    return;
+  }
+  msgEntry(id, name);
+}
+
+// ═══ WINNER SELECT ═══
+function selectWinner(){
+  if(!allEntries.length){toast('Koi entry nahi hai!', '❌'); return;}
+  var idx = Math.floor(Math.random() * allEntries.length);
+  currentWinner = allEntries[idx];
+  document.getElementById('w-name').textContent = currentWinner.name;
+  document.getElementById('w-wallet').textContent = currentWinner.wallet;
+  document.getElementById('w-num').textContent = currentWinner.num;
+  document.getElementById('w-code').textContent = currentWinner.code;
+  document.getElementById('winner-result').classList.add('show');
+  toast('Winner select ho gaya! 🎉', '🏆');
+}
+function announceWinner(){
+  if(!currentWinner){toast('Pehle winner select karein!','❌');return;}
+  openModal('🏆','Winner Announce Karein?','Yeh winner giveaway website par TURANT show hoga — sab users ko popup aayega.',function(){
+    // Settings mein winner save karo
+    db.collection('settings').doc('winner').set({
+      name: currentWinner.name,
+      wallet: currentWinner.wallet,
+      num: currentWinner.num,
+      code: currentWinner.code,
+      docId: currentWinner._id || '',
+      prize: document.getElementById('d-prize').textContent || 'PKR 100',
+      announcedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(){
+      // Winner ki entry par isWinner:true lagao taake usse messaging section dikhe
+      if(currentWinner._id){
+        db.collection('giveaway_entries').doc(currentWinner._id).update({
+          isWinner: true,
+          winnerAnnouncedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(function(err){console.error('isWinner set error:', err);});
+      }
+      toast('Winner announce ho gaya! Website par show ho raha hai 🎉','🏆');
+    }).catch(function(err){
+      console.error('announceWinner error:', err);
+      toast('Winner announce nahi hua! (' + (err.code||'unknown') + ')', '❌', 4000);
+    });
+  });
+}
+function manualAnnounceWinner(){
+  var name = document.getElementById('man-winner-name').value.trim();
+  var wallet = document.getElementById('man-winner-wallet').value.trim();
+  if(!name){toast('Winner ka naam likhein!','❌');return;}
+  openModal('🏆','Winner Announce Karein?',name+' ko winner announce karein? Website par popup show hoga.',function(){
+    db.collection('settings').doc('winner').set({
+      name: name,
+      wallet: wallet || '—',
+      prize: document.getElementById('d-prize').textContent || 'PKR 100',
+      announcedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(function(){
+      toast('Winner announce ho gaya! 🎉','🏆');
+      document.getElementById('man-winner-name').value='';
+      document.getElementById('man-winner-wallet').value='';
+    }).catch(function(err){
+      console.error('manualWinner error:', err);
+      toast('Winner announce nahi hua! (' + (err.code||'unknown') + ')', '❌', 4000);
+    });
+  });
+}
+function deleteAllAnn(){
+  openModal('🗑️','Sab Announcements Delete Karein?','Saari active announcements hata di jaayengi.',function(){
+    db.collection('announcements').get().then(function(snap){
+      var batch=db.batch();
+      snap.forEach(function(d){batch.delete(d.ref);});
+      return batch.commit();
+    }).then(function(){toast('Sab announcements delete ho gayin','✅');});
+  });
+}
+
+// ═══ SETTINGS SAVE ═══
+function saveSetting(key, value){
+  if(!value){toast('Value empty hai!', '❌'); return;}
+  var update = {}; update[key] = value;
+  db.collection('settings').doc('giveaway').set(update, {merge:true}).then(function(){
+    toast(key + ' update ho gaya! ✅', '✅');
+  }).catch(function(err){
+    console.error('saveSetting error:', err);
+    if(err.code === 'permission-denied'){
+      toast('Permission denied! Firebase Rules check karein.', '❌', 5000);
+    } else {
+      toast('Update fail! Internet check karein. (' + err.code + ')', '❌', 4000);
+    }
+  });
+}
+function saveTimer(){
+  var d = parseInt(document.getElementById('set-days').value) || 3;
+  var h = parseInt(document.getElementById('set-hours').value) || 0;
+  var newEnd = Date.now() + (d*24*60*60*1000) + (h*60*60*1000);
+  db.collection('settings').doc('giveaway').set({drawEnd: newEnd}, {merge:true}).then(function(){
+    localStorage.setItem('sz_de', newEnd);
+    toast('Timer reset ho gaya! '+d+' din '+h+' ghante se shuru ✅', '✅');
+  }).catch(function(err){
+    console.error('saveTimer error:', err);
+    toast('Timer save nahi hua! (' + err.code + ')', '❌', 4000);
+  });
+}
+function confirmResetTimer(){
+  openModal('🔄', 'Timer Reset Karein?', 'New draw start hoga. Users dobara participate kar payenge (agar localStorage clear ho).', function(){saveTimer();});
+}
+
+// ═══ CLEAR BANNED LIST ═══
+function clearBannedList(){
+  openModal('🆕','New Giveaway Shuru Karein?','Banned numbers ki list clear ho jaayegi — sab log dobara participate kar sakenge.',function(){
+    db.collection('settings').doc('banned').delete().then(function(){
+      toast('Banned list clear! Ab koi bhi participate kar sakta hai ✅','✅');
+    }).catch(function(err){toast('Error! (' + (err.code||'') + ')','❌');});
+  });
+}
+
+// ═══ ANNOUNCEMENTS ═══
+function sendAnnouncement(){
+  var msg = document.getElementById('ann-msg').value.trim();
+  var type = document.getElementById('ann-type').value;
+  if(!msg){toast('Message likhein pehle!', '❌'); return;}
+  db.collection('announcements').add({
+    message: msg, type: type,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    active: true
+  }).then(function(){
+    document.getElementById('ann-msg').value = '';
+    toast('Announcement bhej di gayi! 📢', '📢');
+  }).catch(function(err){
+    console.error('Announcement error:', err);
+    if(err.code === 'permission-denied'){
+      toast('Permission denied! Firebase Rules check karein.', '❌', 5000);
+    } else {
+      toast('Announcement nahi gayi! Internet check karein.', '❌', 4000);
+    }
+  });
+}
+function loadAnnouncements(){
+  db.collection('announcements').orderBy('createdAt','desc').limit(10).onSnapshot(function(snap){
+    var html = '';
+    snap.forEach(function(doc){
+      var d = doc.data();
+      var ico = {info:'ℹ️', success:'✅', warning:'⚠️'}[d.type] || 'ℹ️';
+      var col = {info:'var(--blue)', success:'var(--g)', warning:'var(--warn)'}[d.type] || 'var(--g)';
+      var time = d.createdAt ? d.createdAt.toDate().toLocaleString('en-PK', {dateStyle:'short', timeStyle:'short'}) : '—';
+      html += '<div style="background:var(--bg2);border:1px solid var(--bdd);border-radius:12px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px"><span style="font-size:18px;flex-shrink:0">'+ico+'</span><div style="flex:1"><div style="font-size:13px;color:var(--tx);margin-bottom:4px">'+esc(d.message)+'</div><div style="font-size:11px;color:var(--txm)">'+time+'</div></div><button class="btn btn-r btn-sm" onclick="deleteAnn(\''+doc.id+'\')">🗑</button></div>';
+    });
+    document.getElementById('ann-list').innerHTML = html || '<div style="color:var(--txm);font-size:13px">Koi announcement nahi</div>';
+  });
+}
+function deleteAnn(id){
+  db.collection('announcements').doc(id).delete().then(function(){toast('Delete ho gayi', '✅');});
+}
+
+// ═══ EXPORT CSV ═══
+function exportCSV(){
+  var rows = [['#','Naam','Wallet','Number','Backup','Code','Waqt']];
+  allEntries.forEach(function(e, i){
+    var time = e.timestamp ? e.timestamp.toDate().toLocaleString() : '';
+    rows.push([i+1, e.name, e.wallet, e.num, e.num2||'', e.code, time]);
+  });
+  var csv = rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sofizona_entries_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  toast('CSV download ho rahi hai!', '📥');
+}
+
+// ═══ MODAL ═══
+function openModal(ico, title, msg, onConfirm, noConfirm){
+  document.getElementById('modal-ico').textContent = ico;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-msg').textContent = msg;
+  var cb = document.getElementById('modal-confirm-btn');
+  if(noConfirm){cb.style.display='none';}
+  else{cb.style.display='';modalCallback=onConfirm;}
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show');modalCallback=null;}
+document.getElementById('modal-confirm-btn').onclick = function(){if(modalCallback)modalCallback();closeModal();};
+
+// ═══ HELPERS ═══
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function maskNum(n){return n ? String(n).slice(0,4)+'***'+String(n).slice(-2) : '—';}
+</script>
+</body>
+</html>
