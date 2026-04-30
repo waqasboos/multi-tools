@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>SofiStore — App Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<style>
+/* ===== ROOT VARIABLES & THEME ===== */
+:root {
+  --bg: #f2f4f8;
+  --bg2: #e8ecf2;
+  --surface: #ffffff;
+  --surface2: #f8f9fc;
+  --surface3: #eef1f6;
+  --text: #1a1c2e;
+  --text2: #4a4d6e;
+  --text3: #8b8fa8;
+  --primary: #1a73e8;
+  --primary-light: #4a95f0;
+  --primary-dark: #1557b0;
+  --primary-bg: rgba(26,115,232,0.08);
+  --primary-bg2: rgba(26,115,232,0.15);
+  --green: #0d9f6e;
+  --green-bg: rgba(13,159,110,0.1);
+  --red: #e53e3e;
+  --yellow: #f6ad55;
+  --orange: #ed8936;
+  --purple: #805ad5;
+  --border: rgba(0,0,0,0.08);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+  --nav-h: 64px;
+  --bottom-nav-h: 60px;
+}
+
+[data-theme="dark"] {
+  --bg: #0f1117;
+  --bg2: #161822;
+  --surface: #1c1f2e;
+  --surface2: #232738;
+  --surface3: #2a2e42;
+  --text: #e8eaf0;
+  --text2: #a0a4b8;
+  --text3: #6b6f85;
+  --primary: #5b9cf6;
+  --primary-light: #7ab4ff;
+  --primary-dark: #3a7de0;
+  --primary-bg: rgba(91,156,246,0.12);
+  --primary-bg2: rgba(91,156,246,0.2);
+  --border: rgba(255,255,255,0.08);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.4);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+/* ===== RESET ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter','Plus Jakarta Sans',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+button{border:none;cursor:pointer;font-family:inherit;background:none;}
+img{max-width:100%;display:block;}
+input{font-family:inherit;border:none;outline:none;}
+ul{list-style:none;}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--text3);border-radius:10px;}
+::-webkit-scrollbar-thumb:hover{background:var(--text2);}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeInScale{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-30px);}to{opacity:1;transform:translateX(0);}}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+@keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+@keyframes ripple{to{transform:scale(4);opacity:0;}}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes gradientShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+@keyframes bounceIn{0%{opacity:0;transform:scale(0.3);}50%{opacity:1;transform:scale(1.05);}70%{transform:scale(0.9);}100%{transform:scale(1);}}
+@keyframes slideUp{from{opacity:0;transform:translateY(100%);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes starPop{0%{transform:scale(0) rotate(-180deg);opacity:0;}60%{transform:scale(1.3) rotate(10deg);opacity:1;}100%{transform:scale(1) rotate(0);opacity:1;}}
+
+.animate-in{animation:fadeIn 0.5s ease forwards;}
+.stagger-1{animation-delay:0.05s;}
+.stagger-2{animation-delay:0.1s;}
+.stagger-3{animation-delay:0.15s;}
+.stagger-4{animation-delay:0.2s;}
+.stagger-5{animation-delay:0.25s;}
+.stagger-6{animation-delay:0.3s;}
+
+/* ===== SPLASH SCREEN ===== */
+#splashScreen{
+  position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#1a73e8,#5b9cf6,#1557b0);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  transition:opacity 0.6s ease,transform 0.6s ease;
+}
+#splashScreen.hide{opacity:0;transform:scale(1.1);pointer-events:none;}
+.splash-icon{width:80px;height:80px;background:white;border-radius:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:bounceIn 0.8s ease;}
+.splash-icon .material-icons-round{font-size:44px;color:#1a73e8;}
+.splash-title{color:white;font-size:1.8rem;font-weight:800;margin-top:20px;letter-spacing:-0.5px;animation:fadeIn 0.6s ease 0.3s both;}
+.splash-sub{color:rgba(255,255,255,0.8);font-size:0.85rem;margin-top:6px;animation:fadeIn 0.6s ease 0.5s both;}
+.splash-loader{width:40px;height:40px;border:3px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;margin-top:30px;}
+
+/* ===== TOP NAVBAR ===== */
+.navbar{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 20px;gap:12px;z-index:1000;
+  backdrop-filter:blur(20px);transition:var(--transition);
+}
+.navbar.scrolled{box-shadow:var(--shadow-md);}
+
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0;}
+.nav-logo-icon{width:36px;height:36px;background:linear-gradient(135deg,#1a73e8,#5b9cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;transition:var(--transition);}
+.nav-logo-icon:hover{transform:rotate(-5deg) scale(1.05);}
+.nav-logo-icon .material-icons-round{font-size:22px;color:white;}
+.nav-logo-text{font-size:1.15rem;font-weight:800;letter-spacing:-0.3px;}
+.nav-logo-text span{color:var(--primary);}
+
+/* Search Bar */
+.nav-search{
+  flex:1;max-width:680px;margin:0 auto;position:relative;
+}
+.nav-search-inner{
+  display:flex;align-items:center;background:var(--surface2);border:2px solid transparent;
+  border-radius:28px;padding:0 16px;height:44px;transition:var(--transition);
+}
+.nav-search-inner:focus-within{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 4px var(--primary-bg);}
+.nav-search-inner .material-icons-round{font-size:20px;color:var(--text3);margin-right:10px;}
+.nav-search-inner input{flex:1;background:none;font-size:0.9rem;color:var(--text);height:100%;}
+.nav-search-inner input::placeholder{color:var(--text3);}
+.search-clear{display:none;width:28px;height:28px;border-radius:50%;align-items:center;justify-content:center;color:var(--text3);transition:var(--transition);}
+.search-clear:hover{background:var(--surface3);color:var(--text);}
+.search-clear.active{display:flex;}
+
+/* Search Suggestions */
+.search-suggestions{
+  position:absolute;top:calc(100% + 8px);left:0;right:0;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);overflow:hidden;display:none;z-index:100;
+  animation:fadeIn 0.2s ease;max-height:400px;overflow-y:auto;
+}
+.search-suggestions.active{display:block;}
+.search-suggestion{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;transition:var(--transition);}
+.search-suggestion:hover{background:var(--primary-bg);}
+.search-suggestion .material-icons-round{font-size:20px;color:var(--text3);}
+.search-suggestion-text{font-size:0.88rem;}
+.search-suggestion-text strong{color:var(--primary);}
+.search-suggestion-cat{font-size:0.72rem;color:var(--text3);margin-left:auto;background:var(--surface3);padding:2px 8px;border-radius:20px;}
+
+/* Nav Actions */
+.nav-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.nav-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:var(--transition);position:relative;}
+.nav-btn:hover{background:var(--primary-bg);color:var(--primary);}
+.nav-btn .material-icons-round{font-size:22px;}
+.nav-btn .badge{position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--surface);}
+.theme-toggle .material-icons-round{transition:transform 0.5s ease;}
+.theme-toggle:hover .material-icons-round{transform:rotate(180deg);}
+
+/* Profile Avatar */
+.nav-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#ff6b6b,#feca57,#48dbfb,#ff9ff3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:white;transition:var(--transition);border:2px solid transparent;}
+.nav-avatar:hover{border-color:var(--primary);transform:scale(1.1);}
+
+/* ===== PROFILE DROPDOWN ===== */
+.profile-dropdown{
+  position:fixed;top:60px;right:16px;width:300px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-xl);z-index:2000;display:none;overflow:hidden;
+  animation:fadeInScale 0.25s ease;
+}
+.profile-dropdown.active{display:block;}
+.profile-header{padding:20px;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;text-align:center;}
+.profile-avatar-lg{width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.2);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;border:3px solid rgba(255,255,255,0.4);}
+.profile-name{font-size:1rem;font-weight:700;}
+.profile-email{font-size:0.75rem;opacity:0.8;margin-top:2px;}
+.profile-menu{padding:8px 0;}
+.profile-menu-item{display:flex;align-items:center;gap:12px;padding:10px 20px;font-size:0.88rem;color:var(--text2);transition:var(--transition);cursor:pointer;}
+.profile-menu-item:hover{background:var(--primary-bg);color:var(--primary);}
+.profile-menu-item .material-icons-round{font-size:20px;}
+.profile-divider{height:1px;background:var(--border);margin:4px 0;}
+
+/* ===== CATEGORY TABS ===== */
+.category-tabs-wrapper{
+  position:fixed;top:var(--nav-h);left:0;right:0;
+  background:var(--surface);border-bottom:1px solid var(--border);z-index:999;
+  transition:var(--transition);
+}
+.category-tabs{
+  display:flex;gap:4px;padding:0 20px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.category-tabs::-webkit-scrollbar{display:none;}
+.cat-tab{
+  padding:12px 18px;font-size:0.85rem;font-weight:600;color:var(--text3);white-space:nowrap;
+  border-bottom:3px solid transparent;transition:var(--transition);cursor:pointer;
+  position:relative;
+}
+.cat-tab:hover{color:var(--text);}
+.cat-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+.cat-tab .material-icons-round{font-size:18px;vertical-align:middle;margin-right:4px;}
+
+/* ===== MAIN CONTENT ===== */
+.main-content{
+  padding-top:calc(var(--nav-h) + 52px);padding-bottom:calc(var(--bottom-nav-h) + 20px);
+  min-height:100vh;
+}
+
+/* ===== HERO BANNER / CAROUSEL ===== */
+.hero-section{padding:16px 20px 8px;}
+.hero-carousel{position:relative;border-radius:var(--radius-xl);overflow:hidden;height:220px;}
+.hero-slide{
+  position:absolute;inset:0;opacity:0;transition:opacity 0.7s ease,transform 0.7s ease;
+  transform:scale(1.03);
+}
+.hero-slide.active{opacity:1;transform:scale(1);}
+.hero-slide-bg{
+  width:100%;height:100%;object-fit:cover;position:absolute;
+}
+.hero-gradient{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,0,0,0.7) 0%,rgba(0,0,0,0.2) 60%,transparent 100%);
+}
+.hero-content{position:absolute;bottom:0;left:0;right:0;padding:24px 28px;color:white;}
+.hero-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;margin-bottom:10px;}
+.hero-badge .material-icons-round{font-size:14px;}
+.hero-title{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;line-height:1.2;margin-bottom:6px;text-shadow:0 2px 10px rgba(0,0,0,0.3);}
+.hero-desc{font-size:0.82rem;opacity:0.9;max-width:400px;line-height:1.4;}
+.hero-cta{
+  margin-top:12px;display:inline-flex;align-items:center;gap:6px;
+  background:white;color:#1a73e8;padding:8px 20px;border-radius:20px;
+  font-size:0.82rem;font-weight:700;transition:var(--transition);
+}
+.hero-cta:hover{transform:scale(1.05);box-shadow:0 4px 15px rgba(0,0,0,0.2);}
+.hero-dots{position:absolute;bottom:12px;right:20px;display:flex;gap:6px;}
+.hero-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;transition:var(--transition);}
+.hero-dot.active{background:white;width:24px;border-radius:4px;}
+
+/* ===== SECTION TITLES ===== */
+.section{padding:20px 20px 0;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.section-title{font-size:1.1rem;font-weight:800;letter-spacing:-0.3px;display:flex;align-items:center;gap:8px;}
+.section-title .material-icons-round{font-size:22px;color:var(--primary);}
+.section-more{font-size:0.8rem;font-weight:600;color:var(--primary);display:flex;align-items:center;gap:2px;cursor:pointer;transition:var(--transition);}
+.section-more:hover{gap:6px;}
+.section-more .material-icons-round{font-size:16px;}
+
+/* ===== CATEGORY CHIPS ===== */
+.category-chips{display:flex;gap:10px;padding:0 20px 8px;overflow-x:auto;scrollbar-width:none;}
+.category-chips::-webkit-scrollbar{display:none;}
+.cat-chip{
+  display:flex;align-items:center;gap:8px;padding:10px 18px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  white-space:nowrap;cursor:pointer;transition:var(--transition);flex-shrink:0;
+}
+.cat-chip:hover{border-color:var(--primary);background:var(--primary-bg);}
+.cat-chip.active{background:var(--primary);color:white;border-color:var(--primary);}
+.cat-chip-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.cat-chip-text{font-size:0.82rem;font-weight:600;}
+
+/* ===== APP CARD (HORIZONTAL SCROLL) ===== */
+.app-row{display:flex;gap:14px;padding:0 20px 16px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;}
+.app-row::-webkit-scrollbar{display:none;}
+
+.app-card{
+  flex-shrink:0;width:150px;scroll-snap-align:start;cursor:pointer;
+  transition:var(--transition);position:relative;
+}
+.app-card:hover{transform:translateY(-4px);}
+.app-card-icon{
+  width:100%;aspect-ratio:1;border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:var(--shadow-sm);margin-bottom:10px;position:relative;
+  background:var(--surface3);
+}
+.app-card-icon img{width:100%;height:100%;object-fit:cover;transition:var(--transition);}
+.app-card:hover .app-card-icon img{transform:scale(1.05);}
+.app-card-icon .app-tag{
+  position:absolute;top:6px;left:6px;background:var(--green);color:white;
+  font-size:0.6rem;font-weight:700;padding:2px 6px;border-radius:4px;
+  text-transform:uppercase;letter-spacing:0.5px;
+}
+.app-card-name{font-size:0.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
+.app-card-dev{font-size:0.7rem;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;}
+.app-card-meta{display:flex;align-items:center;gap:4px;font-size:0.7rem;color:var(--text3);}
+.app-card-meta .star{color:var(--yellow);font-size:12px;}
+.app-card-meta .size{margin-left:auto;}
+
+/* ===== APP CARD LARGE (FEATURED) ===== */
+.app-card-lg{
+  flex-shrink:0;width:300px;scroll-snap-align:start;cursor:pointer;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  overflow:hidden;transition:var(--transition);
+}
+.app-card-lg:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);}
+.app-card-lg-banner{height:140px;overflow:hidden;position:relative;}
+.app-card-lg-banner img{width:100%;height:100%;object-fit:cover;transition:var(--transition);}
+.app-card-lg:hover .app-card-lg-banner img{transform:scale(1.05);}
+.app-card-lg-info{padding:12px 14px;display:flex;align-items:center;gap:10px;}
+.app-card-lg-icon{width:42px;height:42px;border-radius:10px;overflow:hidden;flex-shrink:0;box-shadow:var(--shadow-sm);}
+.app-card-lg-icon img{width:100%;height:100%;object-fit:cover;}
+.app-card-lg-text{flex:1;min-width:0;}
+.app-card-lg-name{font-size:0.88rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.app-card-lg-cat{font-size:0.72rem;color:var(--text3);}
+.app-card-lg-rating{display:flex;align-items:center;gap:3px;font-size:0.72rem;color:var(--text3);margin-top:2px;}
+.app-card-lg-rating .star{color:var(--yellow);font-size:12px;}
+
+/* ===== APP LIST (VERTICAL) ===== */
+.app-list{padding:0 20px;}
+.app-list-item{
+  display:flex;align-items:center;gap:14px;padding:12px 0;
+  border-bottom:1px solid var(--border);cursor:pointer;transition:var(--transition);
+}
+.app-list-item:last-child{border-bottom:none;}
+.app-list-item:hover{background:var(--primary-bg);margin:0 -12px;padding:12px;}
+.app-list-item:hover{border-radius:var(--radius);}
+.app-list-num{width:24px;font-size:0.88rem;font-weight:700;color:var(--text3);text-align:center;flex-shrink:0;}
+.app-list-icon{width:52px;height:52px;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:var(--shadow-sm);}
+.app-list-icon img{width:100%;height:100%;object-fit:cover;}
+.app-list-info{flex:1;min-width:0;}
+.app-list-name{font-size:0.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.app-list-cat{font-size:0.75rem;color:var(--text3);margin-top:1px;}
+.app-list-meta{display:flex;align-items:center;gap:6px;margin-top:3px;}
+.app-list-rating{display:flex;align-items:center;gap:2px;font-size:0.72rem;color:var(--text3);}
+.app-list-rating .star{color:var(--yellow);font-size:12px;}
+.app-list-size{font-size:0.72rem;color:var(--text3);}
+.app-list-install{
+  padding:6px 18px;border-radius:20px;font-size:0.78rem;font-weight:700;
+  color:var(--primary);background:var(--primary-bg);transition:var(--transition);flex-shrink:0;
+}
+.app-list-install:hover{background:var(--primary);color:white;}
+
+/* ===== APP GRID ===== */
+.app-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+  gap:16px;padding:0 20px 20px;
+}
+
+/* ===== APP DETAIL PAGE ===== */
+#appDetailPage{
+  display:none;position:fixed;inset:0;z-index:5000;
+  background:var(--bg);overflow-y:auto;
+  animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.detail-nav{
+  position:sticky;top:0;display:flex;align-items:center;gap:12px;
+  padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);z-index:10;
+  backdrop-filter:blur(20px);
+}
+.detail-back{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:var(--transition);}
+.detail-back:hover{background:var(--surface3);}
+.detail-back .material-icons-round{font-size:22px;}
+.detail-nav-title{font-size:0.95rem;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.detail-nav-actions{display:flex;gap:4px;}
+
+.detail-header{padding:20px;display:flex;gap:16px;align-items:flex-start;}
+.detail-icon{width:80px;height:80px;border-radius:18px;overflow:hidden;box-shadow:var(--shadow-md);flex-shrink:0;}
+.detail-icon img{width:100%;height:100%;object-fit:cover;}
+.detail-info{flex:1;min-width:0;}
+.detail-name{font-size:1.3rem;font-weight:800;letter-spacing:-0.3px;line-height:1.2;}
+.detail-dev{font-size:0.85rem;color:var(--primary);font-weight:600;margin-top:4px;cursor:pointer;}
+.detail-dev:hover{text-decoration:underline;}
+.detail-contains{font-size:0.72rem;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:4px;}
+
+.detail-stats{display:flex;gap:0;padding:16px 20px;overflow-x:auto;scrollbar-width:none;}
+.detail-stats::-webkit-scrollbar{display:none;}
+.detail-stat{flex:1;text-align:center;min-width:80px;padding:0 12px;border-right:1px solid var(--border);}
+.detail-stat:last-child{border-right:none;}
+.detail-stat-value{font-size:0.95rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:3px;}
+.detail-stat-value .material-icons-round{font-size:16px;}
+.detail-stat-value .star{color:var(--yellow);font-size:14px;}
+.detail-stat-label{font-size:0.68rem;color:var(--text3);margin-top:2px;}
+
+.detail-install-section{padding:0 20px 16px;}
+.detail-install-btn{
+  width:100%;padding:14px;border-radius:12px;font-size:0.95rem;font-weight:700;
+  background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;
+  transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 15px rgba(26,115,232,0.3);position:relative;overflow:hidden;
+}
+.detail-install-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(26,115,232,0.4);}
+.detail-install-btn:active{transform:translateY(0);}
+.detail-install-btn .material-icons-round{font-size:20px;}
+.detail-install-btn.installing{background:var(--surface3);color:var(--text);box-shadow:none;}
+.detail-install-btn.installed{background:var(--green);box-shadow:0 4px 15px rgba(13,159,110,0.3);}
+
+/* Screenshots */
+.detail-screenshots{padding:0 20px 16px;}
+.detail-screenshots-title{font-size:0.95rem;font-weight:700;margin-bottom:10px;}
+.screenshots-row{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.screenshots-row::-webkit-scrollbar{display:none;}
+.screenshot-item{
+  flex-shrink:0;width:180px;height:320px;border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow-sm);transition:var(--transition);cursor:pointer;
+  background:var(--surface3);
+}
+.screenshot-item:hover{transform:scale(1.03);}
+.screenshot-item img{width:100%;height:100%;object-fit:cover;}
+
+/* Description */
+.detail-description{padding:0 20px 16px;}
+.detail-description h3{font-size:0.95rem;font-weight:700;margin-bottom:8px;}
+.detail-desc-text{font-size:0.85rem;color:var(--text2);line-height:1.7;}
+.detail-desc-text.collapsed{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.read-more-btn{color:var(--primary);font-size:0.82rem;font-weight:600;margin-top:6px;cursor:pointer;display:inline-block;}
+.read-more-btn:hover{text-decoration:underline;}
+
+/* What's New */
+.detail-whats-new{padding:0 20px 16px;}
+.detail-whats-new h3{font-size:0.95rem;font-weight:700;margin-bottom:8px;}
+.whats-new-content{font-size:0.82rem;color:var(--text2);line-height:1.6;}
+.whats-new-content ul{padding-left:18px;list-style:disc;}
+.whats-new-content li{margin-bottom:4px;}
+
+/* Ratings Section */
+.detail-ratings{padding:0 20px 16px;}
+.detail-ratings h3{font-size:0.95rem;font-weight:700;margin-bottom:12px;}
+.ratings-overview{display:flex;gap:20px;align-items:center;margin-bottom:16px;}
+.ratings-big{text-align:center;}
+.ratings-big-num{font-size:3rem;font-weight:900;line-height:1;}
+.ratings-stars{display:flex;gap:2px;justify-content:center;margin-top:4px;}
+.ratings-stars .material-icons-round{font-size:16px;color:var(--yellow);}
+.ratings-stars .material-icons-round.empty{color:var(--text3);opacity:0.3;}
+.ratings-count{font-size:0.72rem;color:var(--text3);margin-top:2px;}
+.ratings-bars{flex:1;}
+.rating-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.rating-bar-num{font-size:0.72rem;color:var(--text3);width:8px;text-align:center;}
+.rating-bar-track{flex:1;height:8px;background:var(--surface3);border-radius:4px;overflow:hidden;}
+.rating-bar-fill{height:100%;border-radius:4px;transition:width 1s ease;}
+.rating-bar-5 .rating-bar-fill{background:var(--green);width:65%;}
+.rating-bar-4 .rating-bar-fill{background:#8bc34a;width:20%;}
+.rating-bar-3 .rating-bar-fill{background:var(--yellow);width:8%;}
+.rating-bar-2 .rating-bar-fill{background:var(--orange);width:4%;}
+.rating-bar-1 .rating-bar-fill{background:var(--red);width:3%;}
+
+/* Reviews */
+.review-card{
+  background:var(--surface2);border-radius:var(--radius);padding:14px;margin-bottom:10px;
+  transition:var(--transition);
+}
+.review-card:hover{background:var(--surface3);}
+.review-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.review-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:white;}
+.review-user-info{flex:1;}
+.review-user-name{font-size:0.82rem;font-weight:600;}
+.review-date{font-size:0.68rem;color:var(--text3);}
+.review-stars{display:flex;gap:1px;margin-bottom:6px;}
+.review-stars .material-icons-round{font-size:14px;color:var(--yellow);}
+.review-stars .material-icons-round.empty{color:var(--text3);opacity:0.3;}
+.review-text{font-size:0.82rem;color:var(--text2);line-height:1.5;}
+.review-helpful{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:0.72rem;color:var(--text3);}
+.review-helpful button{display:flex;align-items:center;gap:3px;padding:4px 10px;border-radius:20px;font-size:0.72rem;color:var(--text3);border:1px solid var(--border);transition:var(--transition);}
+.review-helpful button:hover{border-color:var(--primary);color:var(--primary);}
+
+/* Data Safety */
+.detail-data-safety{padding:0 20px 16px;}
+.detail-data-safety h3{font-size:0.95rem;font-weight:700;margin-bottom:10px;}
+.data-safety-card{background:var(--surface2);border-radius:var(--radius);padding:14px;border:1px solid var(--border);}
+.data-safety-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;}
+.data-safety-item:not(:last-child){border-bottom:1px solid var(--border);}
+.data-safety-item .material-icons-round{font-size:20px;color:var(--green);margin-top:2px;}
+.data-safety-text{font-size:0.82rem;color:var(--text2);line-height:1.4;}
+.data-safety-text strong{color:var(--text);display:block;margin-bottom:2px;}
+
+/* Similar Apps */
+.detail-similar{padding:0 20px 20px;}
+.detail-similar h3{font-size:0.95rem;font-weight:700;margin-bottom:12px;}
+
+/* ===== BOTTOM NAVIGATION (MOBILE) ===== */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;height:var(--bottom-nav-h);
+  background:var(--surface);border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-around;z-index:1000;
+  backdrop-filter:blur(20px);
+}
+.bottom-nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 12px;border-radius:var(--radius);color:var(--text3);
+  transition:var(--transition);cursor:pointer;position:relative;
+}
+.bottom-nav-item:hover,.bottom-nav-item.active{color:var(--primary);}
+.bottom-nav-item.active::before{
+  content:'';position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  width:24px;height:3px;background:var(--primary);border-radius:0 0 3px 3px;
+}
+.bottom-nav-item .material-icons-round{font-size:22px;transition:var(--transition);}
+.bottom-nav-item.active .material-icons-round{font-variation-settings:'FILL' 1;}
+.bottom-nav-label{font-size:0.62rem;font-weight:600;}
+
+/* ===== SEARCH RESULTS PAGE ===== */
+#searchResultsPage{display:none;padding:12px 20px 20px;}
+.search-results-header{margin-bottom:16px;}
+.search-results-title{font-size:1rem;font-weight:700;}
+.search-results-count{font-size:0.78rem;color:var(--text3);margin-top:2px;}
+
+/* ===== CATEGORY PAGE ===== */
+#categoryPage{display:none;padding:12px 20px 20px;}
+.category-page-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.category-page-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.category-page-info h2{font-size:1.15rem;font-weight:800;}
+.category-page-info p{font-size:0.78rem;color:var(--text3);}
+
+/* ===== OVERLAY ===== */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1500;
+  display:none;opacity:0;transition:opacity 0.3s ease;
+}
+.overlay.active{display:block;opacity:1;}
+
+/* ===== INSTALL PROGRESS MODAL ===== */
+.install-modal{
+  position:fixed;bottom:0;left:0;right:0;z-index:6000;
+  background:var(--surface);border-radius:var(--radius-xl) var(--radius-xl) 0 0;
+  padding:24px 20px 30px;box-shadow:var(--shadow-xl);display:none;
+  animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.install-modal.active{display:block;}
+.install-modal-handle{width:40px;height:4px;background:var(--surface3);border-radius:2px;margin:0 auto 16px;}
+.install-modal-icon{width:56px;height:56px;border-radius:14px;overflow:hidden;margin:0 auto 12px;box-shadow:var(--shadow-sm);}
+.install-modal-icon img{width:100%;height:100%;object-fit:cover;}
+.install-modal-name{text-align:center;font-size:1rem;font-weight:700;margin-bottom:4px;}
+.install-modal-dev{text-align:center;font-size:0.78rem;color:var(--text3);margin-bottom:16px;}
+.install-progress{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;margin-bottom:8px;}
+.install-progress-bar{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:2px;width:0%;transition:width 0.3s ease;}
+.install-progress-text{text-align:center;font-size:0.78rem;color:var(--text3);}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px 20px;display:flex;align-items:center;gap:10px;
+  box-shadow:var(--shadow-lg);z-index:7000;
+  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  max-width:calc(100vw - 40px);
+}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast .material-icons-round{font-size:20px;color:var(--green);}
+.toast-text{font-size:0.85rem;font-weight:500;}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .nav-logo-text{display:none;}
+  .nav-search{margin:0 8px;}
+  .hero-carousel{height:180px;}
+  .hero-title{font-size:1.2rem;}
+  .hero-desc{font-size:0.75rem;}
+  .app-card{width:120px;}
+  .app-card-lg{width:260px;}
+  .screenshot-item{width:140px;height:248px;}
+  .detail-header{padding:16px;}
+  .detail-icon{width:68px;height:68px;}
+  .detail-name{font-size:1.15rem;}
+}
+
+@media(min-width:769px){
+  .bottom-nav{display:none;}
+  .main-content{padding-bottom:20px;}
+  .app-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+}
+
+@media(min-width:1024px){
+  .hero-carousel{height:280px;}
+  .hero-title{font-size:2rem;}
+  .hero-desc{font-size:0.9rem;max-width:500px;}
+  .app-card{width:160px;}
+  .app-card-lg{width:340px;}
+  .screenshot-item{width:200px;height:356px;}
+  .main-content{max-width:1200px;margin:0 auto;}
+  .section{padding:24px 24px 0;}
+  .app-row{padding:0 24px 20px;}
+  .app-list{padding:0 24px;}
+  .category-chips{padding:0 24px 8px;}
+}
+
+/* ===== IMAGE MODAL ===== */
+.img-modal{
+  position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.95);
+  display:none;align-items:center;justify-content:center;
+  animation:fadeIn 0.3s ease;
+}
+.img-modal.active{display:flex;}
+.img-modal img{max-width:90%;max-height:90%;border-radius:var(--radius);object-fit:contain;}
+.img-modal-close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;color:white;cursor:pointer;transition:var(--transition);}
+.img-modal-close:hover{background:rgba(255,255,255,0.3);}
+
+/* ===== RIPPLE ===== */
+.ripple{position:relative;overflow:hidden;}
+.ripple::after{
+  content:'';position:absolute;border-radius:50%;background:rgba(0,0,0,0.08);
+  width:100px;height:100px;margin-top:-50px;margin-left:-50px;
+  top:50%;left:50%;transform:scale(0);opacity:1;
+  transition:transform 0.5s,opacity 0.5s;
+}
+.ripple:active::after{transform:scale(4);opacity:0;transition:0s;}
+
+/* ===== SKELETON LOADING ===== */
+.skeleton{background:linear-gradient(90deg,var(--surface3) 25%,var(--surface2) 50%,var(--surface3) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;}
+</style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splashScreen">
+  <div class="splash-icon"><span class="material-icons-round">storefront</span></div>
+  <div class="splash-title">SofiStore</div>
+  <div class="splash-sub">Your apps, your world</div>
+  <div class="splash-loader"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-logo" onclick="goHome()">
+    <div class="nav-logo-icon"><span class="material-icons-round">storefront</span></div>
+    <div class="nav-logo-text">Sofi<span>Store</span></div>
+  </div>
+  <div class="nav-search">
+    <div class="nav-search-inner">
+      <span class="material-icons-round">search</span>
+      <input type="text" id="searchInput" placeholder="Search apps & games" oninput="handleSearch(this.value)" onfocus="showSuggestions()" autocomplete="off"/>
+      <button class="search-clear" id="searchClear" onclick="clearSearch()"><span class="material-icons-round">close</span></button>
+    </div>
+    <div class="search-suggestions" id="searchSuggestions"></div>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-btn theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+      <span class="material-icons-round" id="themeIcon">dark_mode</span>
+    </button>
+    <button class="nav-btn" title="Notifications">
+      <span class="material-icons-round">notifications_none</span>
+      <span class="badge"></span>
+    </button>
+    <div class="nav-avatar" onclick="toggleProfile()" id="navAvatar">W</div>
+  </div>
+</nav>
+
+<!-- PROFILE DROPDOWN -->
+<div class="profile-dropdown" id="profileDropdown">
+  <div class="profile-header">
+    <div class="profile-avatar-lg">W</div>
+    <div class="profile-name">Waqas Ahmed</div>
+    <div class="profile-email">waqas@sofistore.com</div>
+  </div>
+  <div class="profile-menu">
+    <div class="profile-menu-item"><span class="material-icons-round">person</span>My Profile</div>
+    <div class="profile-menu-item"><span class="material-icons-round">download</span>My Apps & Games</div>
+    <div class="profile-menu-item"><span class="material-icons-round">payment</span>Payments & Subscriptions</div>
+    <div class="profile-menu-item"><span class="material-icons-round">card_giftcard</span>Rewards</div>
+    <div class="profile-divider"></div>
+    <div class="profile-menu-item"><span class="material-icons-round">settings</span>Settings</div>
+    <div class="profile-menu-item"><span class="material-icons-round">help_outline</span>Help & Feedback</div>
+    <div class="profile-menu-item" style="color:var(--red);"><span class="material-icons-round">logout</span>Sign Out</div>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+<!-- CATEGORY TABS -->
+<div class="category-tabs-wrapper">
+  <div class="category-tabs" id="categoryTabs">
+    <div class="cat-tab active" data-cat="for-you" onclick="switchTab(this,'for-you')"><span class="material-icons-round">auto_awesome</span>For you</div>
+    <div class="cat-tab" data-cat="top-charts" onclick="switchTab(this,'top-charts')"><span class="material-icons-round">bar_chart</span>Top charts</div>
+    <div class="cat-tab" data-cat="games" onclick="switchTab(this,'games')"><span class="material-icons-round">sports_esports</span>Games</div>
+    <div class="cat-tab" data-cat="apps" onclick="switchTab(this,'apps')"><span class="material-icons-round">apps</span>Apps</div>
+    <div class="cat-tab" data-cat="movies" onclick="switchTab(this,'movies')"><span class="material-icons-round">movie</span>Movies</div>
+    <div class="cat-tab" data-cat="books" onclick="switchTab(this,'books')"><span class="material-icons-round">menu_book</span>Books</div>
+    <div class="cat-tab" data-cat="kids" onclick="switchTab(this,'kids')"><span class="material-icons-round">child_care</span>Kids</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="mainContent">
+
+<!-- HOME PAGE -->
+<div id="homePage">
+
+  <!-- Hero Banner Carousel -->
+  <div class="hero-section">
+    <div class="hero-carousel" id="heroCarousel">
+      <div class="hero-slide active" style="background:linear-gradient(135deg,#1a237e,#283593);">
+        <div class="hero-gradient"></div>
+        <div class="hero-content">
+          <div class="hero-badge"><span class="material-icons-round">new_releases</span> Featured</div>
+          <div class="hero-title">PUBG Mobile</div>
+          <div class="hero-desc">Experience the most exciting battle royale game on mobile. Drop in, gear up, and compete!</div>
+          <button class="hero-cta" onclick="openApp(0)"><span class="material-icons-round" style="font-size:16px;">get_app</span> Install</button>
+        </div>
+      </div>
+      <div class="hero-slide" style="background:linear-gradient(135deg,#b71c1c,#c62828);">
+        <div class="hero-gradient"></div>
+        <div class="hero-content">
+          <div class="hero-badge"><span class="material-icons-round">trending_up</span> Trending</div>
+          <div class="hero-title">YouTube Premium</div>
+          <div class="hero-desc">Ad-free videos, background play, and YouTube Music Premium included.</div>
+          <button class="hero-cta" onclick="openApp(5)"><span class="material-icons-round" style="font-size:16px;">get_app</span> Get it now</button>
+        </div>
+      </div>
+      <div class="hero-slide" style="background:linear-gradient(135deg,#004d40,#00695c);">
+        <div class="hero-gradient"></div>
+        <div class="hero-content">
+          <div class="hero-badge"><span class="material-icons-round">star</span> Editor's Choice</div>
+          <div class="hero-title">WhatsApp Messenger</div>
+          <div class="hero-desc">Simple. Reliable. Private. Messaging at its best with end-to-end encryption.</div>
+          <button class="hero-cta" onclick="openApp(1)"><span class="material-icons-round" style="font-size:16px;">get_app</span> Install</button>
+        </div>
+      </div>
+      <div class="hero-dots" id="heroDots"></div>
+    </div>
+  </div>
+
+  <!-- Quick Categories -->
+  <div class="section" style="padding-top:12px;">
+    <div class="category-chips" id="categoryChips"></div>
+  </div>
+
+  <!-- Recommended For You -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title"><span class="material-icons-round">recommend</span> Recommended for you</div>
+      <div class="section-more" onclick="showCategoryPage('recommended')">More <span class="material-icons-round">arrow_forward</span></div>
+    </div>
+  </div>
+  <div class="app-row" id="recommendedRow"></div>
+
+  <!-- Featured Games -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title"><span class="material-icons-round">sports_esports</span> Featured Games</div>
+      <div class="section-more" onclick="showCategoryPage('games')">More <span class="material-icons-round">arrow_forward</span></div>
+    </div>
+  </div>
+  <div class="app-row" id="featuredGamesRow"></div>
+
+  <!-- Top Free Apps -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title"><span class="material-icons-round">trending_up</span> Top Free Apps</div>
+      <div class="section-more" onclick="showCategoryPage('top-free')">More <span class="material-icons-round">arrow_forward</span></div>
+    </div>
+  </div>
+  <div class="app-list" id="topFreeList"></div>
+
+  <!-- Popular Games (Large Cards) -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title"><span class="material-icons-round">whatshot</span> Popular Games</div>
+      <div class="section-more" onclick="showCategoryPage('popular-games')">More <span class="material-icons-round">arrow_forward</span></div>
+    </div>
+  </div>
+  <div class="app-row" id="popularGamesRow"></div>
+
+  <!-- Social Apps -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title"><span class="material-icons-round">people</span> Social & Communication</div>
+      <div class="section-more" onclick="showCategoryPage('social')">More <span class="material-icons-round">arrow_forward</span></div>
+    </div>
+  </div>
+  <div class="app-row" id="socialRow"></div>
+
+  <!-- Editors Choice -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title"><span class="material-icons-round">workspace_premium</span> Editor's Choice</div>
+      <div class="section-more" onclick="showCategoryPage('editors-choice')">More <span class="material-icons-round">arrow_forward</span></div>
+    </div>
+  </div>
+  <div class="app-row" id="editorsRow"></div>
+
+  <!-- Productivity -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title"><span class="material-icons-round">work</span> Productivity & Tools</div>
+      <div class="section-more" onclick="showCategoryPage('productivity')">More <span class="material-icons-round">arrow_forward</span></div>
+    </div>
+  </div>
+  <div class="app-row" id="productivityRow"></div>
+
+  <!-- Entertainment -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title"><span class="material-icons-round">live_tv</span> Entertainment</div>
+      <div class="section-more" onclick="showCategoryPage('entertainment')">More <span class="material-icons-round">arrow_forward</span></div>
+    </div>
+  </div>
+  <div class="app-row" id="entertainmentRow"></div>
+
+</div>
+
+<!-- SEARCH RESULTS -->
+<div id="searchResultsPage">
+  <div class="search-results-header">
+    <div class="search-results-title" id="searchResultsTitle">Search Results</div>
+    <div class="search-results-count" id="searchResultsCount"></div>
+  </div>
+  <div class="app-list" id="searchResultsList"></div>
+</div>
+
+<!-- CATEGORY PAGE -->
+<div id="categoryPage">
+  <div class="category-page-header" id="catPageHeader"></div>
+  <div class="app-list" id="catPageList"></div>
+</div>
+
+</main>
+
+<!-- APP DETAIL PAGE -->
+<div id="appDetailPage"></div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-item active" onclick="switchBottomNav(this,'games')">
+    <span class="material-icons-round">sports_esports</span>
+    <span class="bottom-nav-label">Games</span>
+  </div>
+  <div class="bottom-nav-item" onclick="switchBottomNav(this,'apps')">
+    <span class="material-icons-round">apps</span>
+    <span class="bottom-nav-label">Apps</span>
+  </div>
+  <div class="bottom-nav-item" onclick="switchBottomNav(this,'movies')">
+    <span class="material-icons-round">movie</span>
+    <span class="bottom-nav-label">Movies</span>
+  </div>
+  <div class="bottom-nav-item" onclick="switchBottomNav(this,'books')">
+    <span class="material-icons-round">menu_book</span>
+    <span class="bottom-nav-label">Books</span>
+  </div>
+  <div class="bottom-nav-item" onclick="switchBottomNav(this,'offers')">
+    <span class="material-icons-round">local_offer</span>
+    <span class="bottom-nav-label">Offers</span>
+  </div>
+</nav>
+
+<!-- INSTALL MODAL -->
+<div class="install-modal" id="installModal">
+  <div class="install-modal-handle"></div>
+  <div class="install-modal-icon" id="installModalIcon"></div>
+  <div class="install-modal-name" id="installModalName"></div>
+  <div class="install-modal-dev" id="installModalDev"></div>
+  <div class="install-progress"><div class="install-progress-bar" id="installProgressBar"></div></div>
+  <div class="install-progress-text" id="installProgressText">Downloading...</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="material-icons-round">check_circle</span>
+  <span class="toast-text" id="toastText"></span>
+</div>
+
+<!-- IMAGE MODAL -->
+<div class="img-modal" id="imgModal" onclick="closeImgModal()">
+  <div class="img-modal-close"><span class="material-icons-round">close</span></div>
+  <img id="imgModalImg" src="" alt=""/>
+</div>
+
+<script>
+/* ===================================================================
+   SOFISTORE — PROFESSIONAL APP STORE WEBSITE
+   Full A-Z Working with Search, Categories, Ratings, Reviews
+   =================================================================== */
+
+// ===== APP DATA =====
+const APPS = [
+  {
+    id:0, name:"PUBG Mobile", dev:"Krafton, Inc.", category:"Action", catIcon:"sports_esports",
+    rating:4.3, reviews:"28.4M", downloads:"1B+", size:"721 MB", version:"3.2.0",
+    age:"16+", updated:"Apr 15, 2026", contains:"In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23f9a825'/><stop offset='1' stop-color='%23ff6f00'/></linearGradient></defs><rect width='200' height='200' rx='40' fill='url(%23g)'/><text x='100' y='115' text-anchor='middle' fill='white' font-size='70' font-weight='bold' font-family='Arial'>PG</text></svg>",
+    color:"#f9a825",
+    screenshots:["#ff6f00","#e65100","#bf360c","#d84315"],
+    desc:"PUBG MOBILE is the original battle royale game on mobile and one of the best mobile shooting games. With over 1 billion downloads worldwide, PUBG MOBILE offers the most intense free-to-play multiplayer action. Drop in, gear up, and compete in intense 100-player battles. Land on strategic locations, loot weapons and supplies, and survive to become the last team standing.",
+    whatsNew:["New map: Nusa 2.0 with updated terrain","Improved anti-cheat system","New weapon: MG3 light machine gun","Performance optimizations for low-end devices","Season 28 Royale Pass available now"],
+    reviewsList:[
+      {user:"Ahmed K.",avatar:"#e53e3e",rating:5,date:"Apr 10, 2026",text:"Best battle royale game ever! The graphics are incredible and the gameplay is smooth. Love the new Nusa map!",helpful:342},
+      {user:"Sara M.",avatar:"#805ad5",rating:4,date:"Apr 8, 2026",text:"Great game but takes up too much storage. Wish they could optimize the size. Gameplay is excellent though.",helpful:128},
+      {user:"Ali R.",avatar:"#1a73e8",rating:5,date:"Apr 5, 2026",text:"Been playing for years and it keeps getting better. The new season pass is worth it!",helpful:89}
+    ]
+  },
+  {
+    id:1, name:"WhatsApp Messenger", dev:"Meta Platforms", category:"Communication", catIcon:"chat",
+    rating:4.2, reviews:"190M", downloads:"5B+", size:"64 MB", version:"2.26.8",
+    age:"3+", updated:"Apr 20, 2026", contains:"No ads",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%2325D366'/><text x='100' y='120' text-anchor='middle' fill='white' font-size='80' font-weight='bold' font-family='Arial'>W</text></svg>",
+    color:"#25D366",
+    screenshots:["#25D366","#128C7E","#075E54","#34B7F1"],
+    desc:"WhatsApp Messenger is a FREE messaging app available for smartphones. WhatsApp uses your phone's Internet connection to send messages, images, audio or video. Stay in touch with friends and family, anytime, anywhere. WhatsApp is free and offers simple, secure, reliable messaging and calling, available on phones all over the world.",
+    whatsNew:["Chat lock with fingerprint","New emoji reactions","Improved video calling quality","Message editing within 15 minutes","Channels feature for broadcasts"],
+    reviewsList:[
+      {user:"Fatima H.",avatar:"#25D366",rating:5,date:"Apr 18, 2026",text:"The best messaging app. Simple, reliable, and now with amazing new features like channels!",helpful:567},
+      {user:"Omar J.",avatar:"#ff6f00",rating:4,date:"Apr 15, 2026",text:"Good app but needs more customization options. The new edit message feature is great though.",helpful:234},
+      {user:"Zara B.",avatar:"#e53e3e",rating:3,date:"Apr 12, 2026",text:"Decent app but status feature could be better. Also wish they'd add scheduled messages.",helpful:156}
+    ]
+  },
+  {
+    id:2, name:"Instagram", dev:"Meta Platforms", category:"Social", catIcon:"photo_camera",
+    rating:4.4, reviews:"145M", downloads:"5B+", size:"256 MB", version:"328.0",
+    age:"12+", updated:"Apr 22, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><defs><linearGradient id='g' x1='0' y1='1' x2='1' y2='0'><stop offset='0' stop-color='%23f09433'/><stop offset='.25' stop-color='%23e6683c'/><stop offset='.5' stop-color='%23dc2743'/><stop offset='.75' stop-color='%23cc2366'/><stop offset='1' stop-color='%23bc1888'/></linearGradient></defs><rect width='200' height='200' rx='40' fill='url(%23g)'/><text x='100' y='120' text-anchor='middle' fill='white' font-size='80' font-weight='bold' font-family='Arial'>IG</text></svg>",
+    color:"#E1306C",
+    screenshots:["#E1306C","#C13584","#833AB4","#F56040"],
+    desc:"Instagram is a photo and video sharing social networking service. Bringing you closer to the people and things you love. Share photos & videos, watch Reels, browse the Shop, and message friends. Create and share your Story with your closest friends. Discover new accounts, trending topics, and the latest in pop culture.",
+    whatsNew:["Enhanced Reels editing tools","New AI-powered filters","Improved DM features","Better content recommendations","Dark mode improvements"],
+    reviewsList:[
+      {user:"Ayesha K.",avatar:"#C13584",rating:5,date:"Apr 20, 2026",text:"Love the new Reels features! The editing tools are amazing. Best social media app.",helpful:891},
+      {user:"Hassan M.",avatar:"#1a73e8",rating:4,date:"Apr 17, 2026",text:"Great app but the algorithm keeps changing. Sometimes I miss posts from people I follow.",helpful:445},
+      {user:"Nadia S.",avatar:"#25D366",rating:4,date:"Apr 14, 2026",text:"Beautiful interface and great for sharing photos. Wish they'd bring back chronological feed.",helpful:312}
+    ]
+  },
+  {
+    id:3, name:"Subway Surfers", dev:"SYBO Games", category:"Casual", catIcon:"skateboarding",
+    rating:4.5, reviews:"42M", downloads:"5B+", size:"185 MB", version:"3.31.0",
+    age:"3+", updated:"Apr 18, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%2300BCD4'/><stop offset='1' stop-color='%23009688'/></linearGradient></defs><rect width='200' height='200' rx='40' fill='url(%23g)'/><text x='100' y='120' text-anchor='middle' fill='white' font-size='65' font-weight='bold' font-family='Arial'>SS</text></svg>",
+    color:"#00BCD4",
+    screenshots:["#00BCD4","#0097A7","#00796B","#26C6DA"],
+    desc:"Subway Surfers is a classic endless runner game. Help Jake, Tricky & Fresh escape from the grumpy Inspector and his dog. Grind trains with your cool crew! Colorful and vivid HD graphics. Hoverboard Surfing! Paint powered jetpack! Lightning fast swipe acrobatics! Challenge and help your friends!",
+    whatsNew:["New world tour: Tokyo 2026","New character: Yuki","Seasonal events and rewards","Performance improvements","New hoverboards collection"],
+    reviewsList:[
+      {user:"Bilal A.",avatar:"#00BCD4",rating:5,date:"Apr 16, 2026",text:"Been playing since childhood and still love it! The Tokyo update is amazing!",helpful:267},
+      {user:"Maryam F.",avatar:"#e53e3e",rating:5,date:"Apr 13, 2026",text:"Best endless runner game. My kids love it too! Very colorful and fun.",helpful:189},
+      {user:"Usman T.",avatar:"#f9a825",rating:4,date:"Apr 10, 2026",text:"Fun game but too many ads. Otherwise gameplay is smooth and addictive.",helpful:145}
+    ]
+  },
+  {
+    id:4, name:"TikTok", dev:"TikTok Pte. Ltd.", category:"Entertainment", catIcon:"music_note",
+    rating:4.4, reviews:"65M", downloads:"5B+", size:"298 MB", version:"34.5.3",
+    age:"13+", updated:"Apr 21, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%23010101'/><text x='100' y='115' text-anchor='middle' fill='%2325F4EE' font-size='55' font-weight='900' font-family='Arial'>Tik</text><text x='100' y='160' text-anchor='middle' fill='%23FE2C55' font-size='55' font-weight='900' font-family='Arial'>Tok</text></svg>",
+    color:"#010101",
+    screenshots:["#010101","#25F4EE","#FE2C55","#161823"],
+    desc:"TikTok is THE destination for mobile videos. On TikTok, short-form videos are exciting, spontaneous, and genuine. Whether you're a sports fanatic, a pet enthusiast, or just looking for a laugh, there's something for everyone on TikTok. All you have to do is watch, engage with what you like, and skip what you don't.",
+    whatsNew:["New effects and filters","Improved video editor","Live stream enhancements","Better content discovery","Safety features update"],
+    reviewsList:[
+      {user:"Imran Z.",avatar:"#FE2C55",rating:5,date:"Apr 19, 2026",text:"Most entertaining app ever! I can spend hours watching videos. The algorithm knows exactly what I like.",helpful:723},
+      {user:"Hina P.",avatar:"#25F4EE",rating:4,date:"Apr 16, 2026",text:"Great for content creation but can be addictive. The editing tools are top-notch.",helpful:456},
+      {user:"Kamran S.",avatar:"#805ad5",rating:4,date:"Apr 13, 2026",text:"Fun app with great content. Wish there were fewer ads though.",helpful:234}
+    ]
+  },
+  {
+    id:5, name:"YouTube", dev:"Google LLC", category:"Video Players", catIcon:"play_circle",
+    rating:4.2, reviews:"175M", downloads:"10B+", size:"145 MB", version:"19.15.33",
+    age:"3+", updated:"Apr 23, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%23FF0000'/><polygon points='80,60 80,140 150,100' fill='white'/></svg>",
+    color:"#FF0000",
+    screenshots:["#FF0000","#CC0000","#282828","#AAAAAA"],
+    desc:"YouTube is the world's largest video sharing platform. Watch your favorite videos, music videos, gaming videos, and more. Upload and share your own videos with the world. Subscribe to channels you love, create content, and share it with friends, family, and the world. Get the official YouTube app for your device.",
+    whatsNew:["Improved Shorts experience","New ambient mode for videos","Better recommendations","Enhanced live chat features","Picture-in-picture improvements"],
+    reviewsList:[
+      {user:"Danish R.",avatar:"#FF0000",rating:5,date:"Apr 21, 2026",text:"Can't imagine life without YouTube! Best video platform. The Shorts feature is amazing.",helpful:1023},
+      {user:"Aisha L.",avatar:"#1a73e8",rating:4,date:"Apr 18, 2026",text:"Great app but too many ads now. Premium is worth it if you can afford it.",helpful:567},
+      {user:"Faisal K.",avatar:"#25D366",rating:3,date:"Apr 15, 2026",text:"Good content but the recommendations algorithm needs work. Also, remove the double ads!",helpful:445}
+    ]
+  },
+  {
+    id:6, name:"Spotify", dev:"Spotify AB", category:"Music & Audio", catIcon:"headphones",
+    rating:4.3, reviews:"32M", downloads:"1B+", size:"98 MB", version:"8.9.32",
+    age:"3+", updated:"Apr 19, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%231DB954'/><text x='100' y='125' text-anchor='middle' fill='white' font-size='90' font-weight='bold' font-family='Arial'>S</text></svg>",
+    color:"#1DB954",
+    screenshots:["#1DB954","#191414","#1ED760","#282828"],
+    desc:"Spotify is a digital music, podcast, and video service that gives you access to millions of songs and other content from creators all over the world. Basic functions such as playing music are free, but you can also upgrade to Spotify Premium.",
+    whatsNew:["AI DJ feature improvements","Better podcast recommendations","New equalizer settings","Collaborative playlists update","Improved offline mode"],
+    reviewsList:[
+      {user:"Taha M.",avatar:"#1DB954",rating:5,date:"Apr 17, 2026",text:"Best music streaming app! The AI DJ is incredible. Love the personalized playlists.",helpful:678},
+      {user:"Sana A.",avatar:"#e53e3e",rating:4,date:"Apr 14, 2026",text:"Great music library but free version has too many ads. Premium is amazing though.",helpful:345},
+      {user:"Rehan J.",avatar:"#f9a825",rating:4,date:"Apr 11, 2026",text:"Good app for music lovers. Wish they had more regional music content.",helpful:234}
+    ]
+  },
+  {
+    id:7, name:"Clash of Clans", dev:"Supercell", category:"Strategy", catIcon:"shield",
+    rating:4.5, reviews:"56M", downloads:"500M+", size:"287 MB", version:"16.0.8",
+    age:"10+", updated:"Apr 17, 2026", contains:"In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23F4D03F'/><stop offset='1' stop-color='%2316A085'/></linearGradient></defs><rect width='200' height='200' rx='40' fill='url(%23g)'/><text x='100' y='115' text-anchor='middle' fill='white' font-size='55' font-weight='900' font-family='Arial'>CoC</text></svg>",
+    color:"#F4D03F",
+    screenshots:["#F4D03F","#16A085","#27AE60","#2980B9"],
+    desc:"Clash of Clans is an epic combat strategy game. Build your village, raise a clan, and compete in epic Clan Wars! Join millions of players worldwide as you build your village, raise a clan, and compete in epic Clan Wars! Upgrade your heroes to powerful new levels with Super abilities.",
+    whatsNew:["New Town Hall 16 update","New troop: Apprentice Warden","Clan Capital improvements","Balance changes","Quality of life improvements"],
+    reviewsList:[
+      {user:"Hamza K.",avatar:"#F4D03F",rating:5,date:"Apr 15, 2026",text:"Playing since 2013 and still going strong! TH16 is amazing. Best strategy game ever!",helpful:890},
+      {user:"Asad M.",avatar:"#16A085",rating:5,date:"Apr 12, 2026",text:"Great game for strategy lovers. Clan Wars are the best part. Very well balanced.",helpful:567},
+      {user:"Zainab R.",avatar:"#e53e3e",rating:4,date:"Apr 9, 2026",text:"Fun game but progression is slow without spending money. Still enjoyable though!",helpful:345}
+    ]
+  },
+  {
+    id:8, name:"Google Maps", dev:"Google LLC", category:"Navigation", catIcon:"map",
+    rating:4.3, reviews:"18M", downloads:"10B+", size:"112 MB", version:"11.98",
+    age:"3+", updated:"Apr 22, 2026", contains:"No ads",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%234285F4'/><text x='100' y='120' text-anchor='middle' fill='white' font-size='65' font-weight='bold' font-family='Arial'>GM</text></svg>",
+    color:"#4285F4",
+    screenshots:["#4285F4","#34A853","#FBBC05","#EA4335"],
+    desc:"Navigate your world faster and easier with Google Maps. Over 220 countries and territories mapped and hundreds of millions of businesses and places on the map. Get real-time GPS navigation, traffic, and transit info, and explore local neighborhoods.",
+    whatsNew:["Improved AR navigation","Better offline maps","EV charging station locator","Enhanced cycling routes","Live View improvements"],
+    reviewsList:[
+      {user:"Nabeel S.",avatar:"#4285F4",rating:5,date:"Apr 20, 2026",text:"The best navigation app. Never gets me lost. AR navigation is a game changer!",helpful:456},
+      {user:"Rabia K.",avatar:"#34A853",rating:4,date:"Apr 17, 2026",text:"Very useful but drains battery fast. Offline maps are a lifesaver though.",helpful:289},
+      {user:"Waqar H.",avatar:"#EA4335",rating:4,date:"Apr 14, 2026",text:"Great app, use it daily. Street view is amazing. Wish it worked better in rural areas.",helpful:178}
+    ]
+  },
+  {
+    id:9, name:"Netflix", dev:"Netflix, Inc.", category:"Entertainment", catIcon:"movie",
+    rating:4.0, reviews:"15M", downloads:"1B+", size:"87 MB", version:"8.115.0",
+    age:"16+", updated:"Apr 21, 2026", contains:"In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%23E50914'/><text x='100' y='125' text-anchor='middle' fill='white' font-size='70' font-weight='900' font-family='Arial'>N</text></svg>",
+    color:"#E50914",
+    screenshots:["#E50914","#B20710","#221F1F","#F5F5F1"],
+    desc:"Netflix is the world's leading streaming entertainment service with over 230 million paid memberships in over 190 countries. Enjoy TV series, documentaries, feature films, and mobile games across a wide variety of genres and languages.",
+    whatsNew:["New mobile games added","Improved download quality","Better parental controls","Enhanced search features","New UI for tablets"],
+    reviewsList:[
+      {user:"Laiba A.",avatar:"#E50914",rating:5,date:"Apr 19, 2026",text:"Best streaming service. The content library is amazing. Love the new games feature!",helpful:678},
+      {user:"Saad Q.",avatar:"#1a73e8",rating:4,date:"Apr 16, 2026",text:"Great content but getting expensive. The mobile games are a nice addition.",helpful:345},
+      {user:"Mahira T.",avatar:"#25D366",rating:3,date:"Apr 13, 2026",text:"Good shows but the price keeps going up. Also wish they had more Pakistani content.",helpful:234}
+    ]
+  },
+  {
+    id:10, name:"Facebook", dev:"Meta Platforms", category:"Social", catIcon:"people",
+    rating:3.9, reviews:"120M", downloads:"5B+", size:"312 MB", version:"450.0",
+    age:"12+", updated:"Apr 23, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%231877F2'/><text x='100' y='135' text-anchor='middle' fill='white' font-size='100' font-weight='bold' font-family='Arial'>f</text></svg>",
+    color:"#1877F2",
+    screenshots:["#1877F2","#4267B2","#898F9C","#E7F3FF"],
+    desc:"Facebook helps you connect with friends, family and communities of people who share your interests. Connecting with your friends and family as well as discovering new ones is easy with features like Groups, Watch and Marketplace.",
+    whatsNew:["Improved Reels sharing","Better Marketplace experience","Enhanced group features","New privacy controls","AI-powered content suggestions"],
+    reviewsList:[
+      {user:"Kashif R.",avatar:"#1877F2",rating:4,date:"Apr 21, 2026",text:"Still the best for staying connected with family. Marketplace is very useful.",helpful:567},
+      {user:"Amna S.",avatar:"#e53e3e",rating:3,date:"Apr 18, 2026",text:"Too many ads now and the app is getting bloated. Takes up too much space.",helpful:445},
+      {user:"Talha B.",avatar:"#25D366",rating:3,date:"Apr 15, 2026",text:"Used to be better. Too many features now, it's overwhelming. Still useful for groups.",helpful:312}
+    ]
+  },
+  {
+    id:11, name:"Telegram", dev:"Telegram FZ-LLC", category:"Communication", catIcon:"send",
+    rating:4.5, reviews:"22M", downloads:"1B+", size:"72 MB", version:"10.12.0",
+    age:"16+", updated:"Apr 20, 2026", contains:"No ads",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%230088CC'/><text x='100' y='120' text-anchor='middle' fill='white' font-size='70' font-weight='bold' font-family='Arial'>TG</text></svg>",
+    color:"#0088CC",
+    screenshots:["#0088CC","#229ED9","#1B9FD4","#0D47A1"],
+    desc:"Telegram is a cloud-based mobile and desktop messaging app with a focus on security and speed. It's fast, simple, free, and syncs seamlessly across all your devices. With Telegram, you can send messages, photos, videos, and files of any type, as well as create groups for up to 200,000 people.",
+    whatsNew:["Stories feature improved","New bot platform updates","Enhanced channel features","Better file sharing","Custom emoji packs"],
+    reviewsList:[
+      {user:"Junaid M.",avatar:"#0088CC",rating:5,date:"Apr 18, 2026",text:"Best messaging app! Fast, secure, and feature-rich. Channels are amazing.",helpful:678},
+      {user:"Sadia F.",avatar:"#e53e3e",rating:5,date:"Apr 15, 2026",text:"Love the cloud storage and speed. No storage issues like other apps. Premium is worth it!",helpful:456},
+      {user:"Rizwan A.",avatar:"#f9a825",rating:4,date:"Apr 12, 2026",text:"Great app with tons of features. Bot platform is incredible for developers.",helpful:345}
+    ]
+  },
+  {
+    id:12, name:"Candy Crush Saga", dev:"King", category:"Puzzle", catIcon:"extension",
+    rating:4.5, reviews:"48M", downloads:"5B+", size:"102 MB", version:"1.270.0",
+    age:"3+", updated:"Apr 16, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FF6B6B'/><stop offset='1' stop-color='%23ee5a24'/></linearGradient></defs><rect width='200' height='200' rx='40' fill='url(%23g)'/><text x='100' y='115' text-anchor='middle' fill='white' font-size='55' font-weight='900' font-family='Arial'>CC</text></svg>",
+    color:"#FF6B6B",
+    screenshots:["#FF6B6B","#ee5a24","#f0932b","#e056fd"],
+    desc:"Candy Crush Saga, from the makers of Candy Crush Soda Saga and Farm Heroes Saga! Join Tiffi and Mr. Toffee on their sweet adventure through the Candy Kingdom. Travel through magical lands, match candies, and beat the competition!",
+    whatsNew:["New world: Caramel Canyon","500 new levels","Seasonal event rewards","New candy types","Performance improvements"],
+    reviewsList:[
+      {user:"Mehreen B.",avatar:"#FF6B6B",rating:5,date:"Apr 14, 2026",text:"Most addictive game ever! Been playing for years. The new levels are challenging and fun.",helpful:345},
+      {user:"Irfan Q.",avatar:"#1a73e8",rating:4,date:"Apr 11, 2026",text:"Great puzzle game but some levels feel impossible without boosters. Still enjoyable.",helpful:234},
+      {user:"Noor H.",avatar:"#25D366",rating:4,date:"Apr 8, 2026",text:"Fun time-killer. Love the new events. Wish they gave more free lives though.",helpful:178}
+    ]
+  },
+  {
+    id:13, name:"Snapchat", dev:"Snap Inc.", category:"Social", catIcon:"camera_alt",
+    rating:4.1, reviews:"38M", downloads:"1B+", size:"213 MB", version:"12.85.0",
+    age:"13+", updated:"Apr 22, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%23FFFC00'/><text x='100' y='125' text-anchor='middle' fill='white' font-size='70' font-weight='900' font-family='Arial' stroke='black' stroke-width='3'>S</text></svg>",
+    color:"#FFFC00",
+    screenshots:["#FFFC00","#F7DC6F","#F39C12","#E67E22"],
+    desc:"Snapchat is the fun and easy way to share the moment with your friends and family. Snap a photo or a video, add a caption, and send it to your best friends. Express yourself with Filters, Lenses, Bitmojis, and all kinds of fun effects.",
+    whatsNew:["My AI improvements","New AR Lenses","Spotlight enhancements","Better Map features","Improved chat experience"],
+    reviewsList:[
+      {user:"Dua K.",avatar:"#FFFC00",rating:4,date:"Apr 20, 2026",text:"Fun app for sharing moments! The AR lenses are amazing. My AI is getting smarter.",helpful:456},
+      {user:"Shayan M.",avatar:"#1a73e8",rating:4,date:"Apr 17, 2026",text:"Good for quick snaps with friends. Spotlight is getting better. App size is too big though.",helpful:278},
+      {user:"Alina R.",avatar:"#e53e3e",rating:3,date:"Apr 14, 2026",text:"Used to love it more. Now it feels cluttered with too many features.",helpful:189}
+    ]
+  },
+  {
+    id:14, name:"Google Chrome", dev:"Google LLC", category:"Tools", catIcon:"language",
+    rating:4.2, reviews:"35M", downloads:"10B+", size:"195 MB", version:"124.0",
+    age:"3+", updated:"Apr 23, 2026", contains:"No ads",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%234285F4'/><circle cx='100' cy='100' r='50' fill='white'/><circle cx='100' cy='100' r='25' fill='%234285F4'/></svg>",
+    color:"#4285F4",
+    screenshots:["#4285F4","#34A853","#FBBC05","#EA4335"],
+    desc:"Google Chrome is a fast, easy to use, and secure web browser. Designed for Android, Chrome brings you personalized news articles, quick links to your favorite sites, downloads, and Google Search and Google Translate built-in.",
+    whatsNew:["Enhanced privacy controls","Faster page loading","New tab groups feature","Improved password manager","Better reading mode"],
+    reviewsList:[
+      {user:"Owais R.",avatar:"#4285F4",rating:5,date:"Apr 21, 2026",text:"Best browser for Android. Fast, reliable, and syncs perfectly with my desktop.",helpful:567},
+      {user:"Maham S.",avatar:"#34A853",rating:4,date:"Apr 18, 2026",text:"Good browser but uses too much RAM. Tab groups feature is very helpful.",helpful:345},
+      {user:"Farhan J.",avatar:"#EA4335",rating:4,date:"Apr 15, 2026",text:"Solid browser with great features. Password manager is a lifesaver.",helpful:234}
+    ]
+  },
+  {
+    id:15, name:"Minecraft", dev:"Mojang Studios", category:"Adventure", catIcon:"terrain",
+    rating:4.5, reviews:"8M", downloads:"50M+", size:"632 MB", version:"1.21.40",
+    age:"7+", updated:"Apr 14, 2026", contains:"In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%234CAF50'/><text x='100' y='115' text-anchor='middle' fill='white' font-size='55' font-weight='900' font-family='Arial'>MC</text></svg>",
+    color:"#4CAF50",
+    screenshots:["#4CAF50","#795548","#8BC34A","#2196F3"],
+    desc:"Explore infinite worlds and build everything from the simplest of homes to the grandest of castles. Play in creative mode with unlimited resources or mine deep into the world in survival mode. Craft, create, and explore alone, or with friends on mobile devices or Windows.",
+    whatsNew:["New biomes: Pale Garden","Trial Chambers expansion","New mob: Breeze","Copper and Tuff blocks","Bug fixes and improvements"],
+    reviewsList:[
+      {user:"Abdullah S.",avatar:"#4CAF50",rating:5,date:"Apr 12, 2026",text:"Best game ever made! Endless possibilities. The new update with Pale Garden is beautiful!",helpful:789},
+      {user:"Hafsa M.",avatar:"#795548",rating:5,date:"Apr 9, 2026",text:"My kids and I play together. Best family game. Worth every penny!",helpful:567},
+      {user:"Yasir K.",avatar:"#2196F3",rating:4,date:"Apr 6, 2026",text:"Amazing game but can lag on older devices. Survival mode is incredibly addictive.",helpful:345}
+    ]
+  },
+  {
+    id:16, name:"Twitter / X", dev:"X Corp.", category:"Social", catIcon:"tag",
+    rating:3.8, reviews:"14M", downloads:"1B+", size:"142 MB", version:"10.35.0",
+    age:"17+", updated:"Apr 22, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%23000000'/><text x='100' y='130' text-anchor='middle' fill='white' font-size='100' font-weight='900' font-family='Arial'>X</text></svg>",
+    color:"#000000",
+    screenshots:["#000000","#1DA1F2","#14171A","#657786"],
+    desc:"X is the trusted global digital town square for everyone. With X, you can: Join the conversation, find out what's happening in the world right now, get the latest news and information, share your thoughts, and connect with people.",
+    whatsNew:["New Communities features","Long-form posts improvements","Enhanced Spaces experience","Better video player","Improved DM encryption"],
+    reviewsList:[
+      {user:"Kamil A.",avatar:"#000000",rating:4,date:"Apr 20, 2026",text:"Best platform for news and updates. Communities feature is getting better.",helpful:456},
+      {user:"Bushra N.",avatar:"#1DA1F2",rating:3,date:"Apr 17, 2026",text:"Still use it for news but the interface changes are annoying. Premium features are good.",helpful:289},
+      {user:"Tariq M.",avatar:"#e53e3e",rating:3,date:"Apr 14, 2026",text:"Was better as Twitter. Too many changes lately. Still useful for staying informed.",helpful:178}
+    ]
+  },
+  {
+    id:17, name:"Ludo King", dev:"Gametion Technologies", category:"Board", catIcon:"casino",
+    rating:4.2, reviews:"12M", downloads:"500M+", size:"78 MB", version:"8.5.0",
+    age:"3+", updated:"Apr 18, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%238E24AA'/><stop offset='1' stop-color='%23E91E63'/></linearGradient></defs><rect width='200' height='200' rx='40' fill='url(%23g)'/><text x='100' y='115' text-anchor='middle' fill='white' font-size='55' font-weight='900' font-family='Arial'>LK</text></svg>",
+    color:"#8E24AA",
+    screenshots:["#8E24AA","#E91E63","#FF5722","#4CAF50"],
+    desc:"Ludo King is a cross-platform multiplayer game that supports Desktop, Android, iOS and Windows mobile. This game also supports offline mode, where the player can play with the computer. This is a board game played between friends, family & kids.",
+    whatsNew:["New game modes","Improved multiplayer","Custom dice skins","Tournament mode","Chat improvements"],
+    reviewsList:[
+      {user:"Ayaan R.",avatar:"#8E24AA",rating:5,date:"Apr 16, 2026",text:"Best family game! We play every evening. The online multiplayer is very smooth.",helpful:345},
+      {user:"Sidra K.",avatar:"#E91E63",rating:4,date:"Apr 13, 2026",text:"Fun game to play with friends. Sometimes the dice feels unfair but still enjoyable.",helpful:234},
+      {user:"Babar H.",avatar:"#FF5722",rating:4,date:"Apr 10, 2026",text:"Classic ludo made digital. Tournament mode is exciting. Minor lag sometimes.",helpful:178}
+    ]
+  },
+  {
+    id:18, name:"Google Drive", dev:"Google LLC", category:"Productivity", catIcon:"cloud",
+    rating:4.4, reviews:"8M", downloads:"5B+", size:"68 MB", version:"2.26.177",
+    age:"3+", updated:"Apr 21, 2026", contains:"In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%234285F4'/><stop offset='.33' stop-color='%230F9D58'/><stop offset='.66' stop-color='%23F4B400'/></linearGradient></defs><rect width='200' height='200' rx='40' fill='url(%23g)'/><text x='100' y='120' text-anchor='middle' fill='white' font-size='65' font-weight='bold' font-family='Arial'>GD</text></svg>",
+    color:"#4285F4",
+    screenshots:["#4285F4","#0F9D58","#F4B400","#DB4437"],
+    desc:"Google Drive is a safe place to back up and access all your files from any device. Easily invite others to view, edit, or leave comments. With Drive, you can store files securely and open or edit them from any device.",
+    whatsNew:["Improved file search","Better sharing controls","New scan document feature","Enhanced offline mode","Faster sync speeds"],
+    reviewsList:[
+      {user:"Salman Y.",avatar:"#4285F4",rating:5,date:"Apr 19, 2026",text:"Essential app for productivity. Cloud storage made easy. Love the new scan feature.",helpful:456},
+      {user:"Parveen A.",avatar:"#0F9D58",rating:4,date:"Apr 16, 2026",text:"Great for file management. 15GB free is generous. Integration with other Google apps is seamless.",helpful:289},
+      {user:"Umair T.",avatar:"#F4B400",rating:4,date:"Apr 13, 2026",text:"Reliable cloud storage. Sharing and collaboration features are top-notch.",helpful:178}
+    ]
+  },
+  {
+    id:19, name:"Free Fire", dev:"Garena International", category:"Action", catIcon:"local_fire_department",
+    rating:4.1, reviews:"90M", downloads:"1B+", size:"456 MB", version:"1.106.1",
+    age:"12+", updated:"Apr 20, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23FF6B00'/><stop offset='1' stop-color='%23FF2D00'/></linearGradient></defs><rect width='200' height='200' rx='40' fill='url(%23g)'/><text x='100' y='115' text-anchor='middle' fill='white' font-size='55' font-weight='900' font-family='Arial'>FF</text></svg>",
+    color:"#FF6B00",
+    screenshots:["#FF6B00","#FF2D00","#FF8C00","#BF360C"],
+    desc:"Free Fire is the ultimate survival shooter game available on mobile. Each 10-minute game places you on a remote island where you are pit against 49 other players, all seeking survival. Players freely choose their starting point with their parachute, and aim to stay in the safe zone for as long as possible.",
+    whatsNew:["New character: Shadow Striker","Map updates","New weapons added","Ranked season reset","Performance optimizations"],
+    reviewsList:[
+      {user:"Shahzad M.",avatar:"#FF6B00",rating:5,date:"Apr 18, 2026",text:"Best battle royale for low-end devices! Runs smoothly and fast-paced gameplay!",helpful:567},
+      {user:"Kiran L.",avatar:"#FF2D00",rating:4,date:"Apr 15, 2026",text:"Fun game with great characters. Events are exciting. Can be pay-to-win sometimes.",helpful:345},
+      {user:"Naveed H.",avatar:"#1a73e8",rating:4,date:"Apr 12, 2026",text:"Good alternative to PUBG. Quick matches are perfect for short gaming sessions.",helpful:234}
+    ]
+  },
+  {
+    id:20, name:"Zoom", dev:"Zoom Video Communications", category:"Business", catIcon:"videocam",
+    rating:4.3, reviews:"6M", downloads:"500M+", size:"168 MB", version:"6.0.10",
+    age:"3+", updated:"Apr 19, 2026", contains:"In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%232D8CFF'/><text x='100' y='120' text-anchor='middle' fill='white' font-size='55' font-weight='bold' font-family='Arial'>Zm</text></svg>",
+    color:"#2D8CFF",
+    screenshots:["#2D8CFF","#0B5394","#0078D7","#00A4EF"],
+    desc:"Zoom is a free HD meeting app with video and screen sharing for up to 100 people. Start or join a 100-person meeting with crystal-clear, face-to-face video, high quality screen sharing, and instant messaging.",
+    whatsNew:["AI Companion improvements","Enhanced virtual backgrounds","Better noise cancellation","New meeting reactions","Improved recording quality"],
+    reviewsList:[
+      {user:"Dr. Amjad K.",avatar:"#2D8CFF",rating:5,date:"Apr 17, 2026",text:"Essential for work meetings. Very reliable and the AI features are incredible.",helpful:456},
+      {user:"Samina B.",avatar:"#e53e3e",rating:4,date:"Apr 14, 2026",text:"Great for online classes and meetings. Background noise cancellation is a game changer.",helpful:289},
+      {user:"Waqar S.",avatar:"#25D366",rating:4,date:"Apr 11, 2026",text:"Best video conferencing app. Works great even on slow internet connections.",helpful:178}
+    ]
+  },
+  {
+    id:21, name:"Canva", dev:"Canva", category:"Art & Design", catIcon:"palette",
+    rating:4.6, reviews:"14M", downloads:"500M+", size:"42 MB", version:"2.260.0",
+    age:"3+", updated:"Apr 22, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%237B2FF7'/><stop offset='1' stop-color='%2300C4CC'/></linearGradient></defs><rect width='200' height='200' rx='40' fill='url(%23g)'/><text x='100' y='120' text-anchor='middle' fill='white' font-size='55' font-weight='bold' font-family='Arial'>Ca</text></svg>",
+    color:"#7B2FF7",
+    screenshots:["#7B2FF7","#00C4CC","#FF6B6B","#FFD166"],
+    desc:"Canva makes design amazingly simple for everyone. Create stunning graphics, presentations, posters, documents, and other visual content. With thousands of templates and an easy drag-and-drop tool, you can create anything in minutes.",
+    whatsNew:["Magic Studio AI tools","New template collections","Improved video editing","Better collaboration features","Brand Kit enhancements"],
+    reviewsList:[
+      {user:"Farah N.",avatar:"#7B2FF7",rating:5,date:"Apr 20, 2026",text:"Best design tool ever! Magic Studio is incredible. Makes everyone a designer!",helpful:678},
+      {user:"Adeel R.",avatar:"#00C4CC",rating:5,date:"Apr 17, 2026",text:"Amazing for social media content. Templates are beautiful. Pro is worth the subscription.",helpful:456},
+      {user:"Zahra M.",avatar:"#FF6B6B",rating:4,date:"Apr 14, 2026",text:"Great app for quick designs. AI features are getting better. Wish more templates were free.",helpful:345}
+    ]
+  },
+  {
+    id:22, name:"Among Us", dev:"Innersloth LLC", category:"Casual", catIcon:"groups",
+    rating:4.2, reviews:"15M", downloads:"500M+", size:"159 MB", version:"2024.11.26",
+    age:"9+", updated:"Apr 10, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%23C51111'/><text x='100' y='120' text-anchor='middle' fill='white' font-size='55' font-weight='900' font-family='Arial'>AU</text></svg>",
+    color:"#C51111",
+    screenshots:["#C51111","#132ED1","#11802D","#6B2FBB"],
+    desc:"Among Us is an online multiplayer social deduction game. Play with 4-15 players online or via local WiFi. Crewmates work together to complete tasks before one or more Impostors can kill everyone. Find the Impostor before it's too late!",
+    whatsNew:["New roles: Sheriff and Engineer","Hide and Seek mode","New map areas","Cosmetic bundles","Bug fixes"],
+    reviewsList:[
+      {user:"Hamid Z.",avatar:"#C51111",rating:5,date:"Apr 8, 2026",text:"Sus! Best party game ever. Hide and Seek mode is so much fun with friends!",helpful:567},
+      {user:"Areeba S.",avatar:"#132ED1",rating:4,date:"Apr 5, 2026",text:"Great with friends but random lobbies can be toxic. New roles add great variety.",helpful:345},
+      {user:"Talal K.",avatar:"#11802D",rating:4,date:"Apr 2, 2026",text:"Fun deduction game. Best played with voice chat. New updates keep it fresh.",helpful:234}
+    ]
+  },
+  {
+    id:23, name:"Duolingo", dev:"Duolingo", category:"Education", catIcon:"school",
+    rating:4.6, reviews:"22M", downloads:"500M+", size:"52 MB", version:"5.148.2",
+    age:"3+", updated:"Apr 21, 2026", contains:"Ads · In-app purchases",
+    icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' rx='40' fill='%2358CC02'/><text x='100' y='120' text-anchor='middle' fill='white' font-size='55' font-weight='bold' font-family='Arial'>Dl</text></svg>",
+    color:"#58CC02",
+    screenshots:["#58CC02","#89E219","#1CB0F6","#FF9600"],
+    desc:"Duolingo is the world's most popular way to learn languages. It's 100% free, fun, and scientifically proven to work. Practice online on duolingo.com or on the apps! Learn 40+ languages including Spanish, French, German, and more.",
+    whatsNew:["New Math and Music courses","Improved AI tutor","Better streak features","New character animations","Enhanced leaderboards"],
+    reviewsList:[
+      {user:"Haroon J.",avatar:"#58CC02",rating:5,date:"Apr 19, 2026",text:"Best language learning app! The gamification makes learning fun. 500 day streak and counting!",helpful:678},
+      {user:"Nimra A.",avatar:"#1CB0F6",rating:5,date:"Apr 16, 2026",text:"Amazing app! Learned French basics in 3 months. Math course is a great addition.",helpful:456},
+      {user:"Asim P.",avatar:"#FF9600",rating:4,date:"Apr 13, 2026",text:"Great for beginners but needs more advanced content. Duo the owl keeps me motivated!",helpful:345}
+    ]
+  }
+];
+
+// Categories
+const CATEGORIES = [
+  {name:"Games", icon:"sports_esports", color:"#e53e3e", bg:"#fee2e2"},
+  {name:"Social", icon:"people", color:"#805ad5", bg:"#ede9fe"},
+  {name:"Entertainment", icon:"movie", color:"#d69e2e", bg:"#fefcbf"},
+  {name:"Communication", icon:"chat", color:"#3182ce", bg:"#bee3f8"},
+  {name:"Productivity", icon:"work", color:"#38a169", bg:"#c6f6d5"},
+  {name:"Education", icon:"school", color:"#dd6b20", bg:"#feebc8"},
+  {name:"Tools", icon:"build", color:"#718096", bg:"#e2e8f0"},
+  {name:"Music & Audio", icon:"headphones", color:"#e53e8c", bg:"#fed7e2"},
+  {name:"Art & Design", icon:"palette", color:"#7b2ff7", bg:"#e9d5ff"},
+  {name:"Business", icon:"business", color:"#2d8cff", bg:"#dbeafe"},
+];
+
+// ===== INITIALIZATION =====
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    document.getElementById('splashScreen').classList.add('hide');
+    setTimeout(() => document.getElementById('splashScreen').style.display='none', 600);
+  }, 1500);
+
+  renderCategoryChips();
+  renderHeroDots();
+  renderRecommended();
+  renderFeaturedGames();
+  renderTopFreeApps();
+  renderPopularGames();
+  renderSocialApps();
+  renderEditorsChoice();
+  renderProductivity();
+  renderEntertainment();
+  startCarousel();
+  initScrollEffects();
+});
+
+// ===== RENDER FUNCTIONS =====
+function renderCategoryChips(){
+  const el=document.getElementById('categoryChips');
+  el.innerHTML=CATEGORIES.map(c=>`
+    <div class="cat-chip" onclick="showCategoryPage('${c.name.toLowerCase()}')">
+      <div class="cat-chip-icon" style="background:${c.bg};color:${c.color};">
+        <span class="material-icons-round">${c.icon}</span>
+      </div>
+      <span class="cat-chip-text">${c.name}</span>
+    </div>
+  `).join('');
+}
+
+function appCardHTML(app, showTag){
+  return `
+    <div class="app-card animate-in" onclick="openApp(${app.id})">
+      <div class="app-card-icon">
+        <img src="${app.icon}" alt="${app.name}" loading="lazy"/>
+        ${showTag?`<span class="app-tag">New</span>`:''}
+      </div>
+      <div class="app-card-name">${app.name}</div>
+      <div class="app-card-dev">${app.dev}</div>
+      <div class="app-card-meta">
+        <span class="material-icons-round star">star</span>
+        ${app.rating}
+        <span class="size">${app.size}</span>
+      </div>
+    </div>`;
+}
+
+function appCardLgHTML(app){
+  return `
+    <div class="app-card-lg animate-in" onclick="openApp(${app.id})">
+      <div class="app-card-lg-banner">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,${app.color},${app.screenshots[1]});display:flex;align-items:center;justify-content:center;">
+          <img src="${app.icon}" alt="${app.name}" style="width:60px;height:60px;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,0.3);"/>
+        </div>
+      </div>
+      <div class="app-card-lg-info">
+        <div class="app-card-lg-icon"><img src="${app.icon}" alt="${app.name}"/></div>
+        <div class="app-card-lg-text">
+          <div class="app-card-lg-name">${app.name}</div>
+          <div class="app-card-lg-cat">${app.category}</div>
+          <div class="app-card-lg-rating">
+            <span class="material-icons-round star">star</span>
+            ${app.rating} · ${app.downloads}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function appListItemHTML(app, num){
+  return `
+    <div class="app-list-item" onclick="openApp(${app.id})">
+      ${num!==undefined?`<span class="app-list-num">${num}</span>`:''}
+      <div class="app-list-icon"><img src="${app.icon}" alt="${app.name}"/></div>
+      <div class="app-list-info">
+        <div class="app-list-name">${app.name}</div>
+        <div class="app-list-cat">${app.category}</div>
+        <div class="app-list-meta">
+          <div class="app-list-rating"><span class="material-icons-round star">star</span>${app.rating}</div>
+          <span class="app-list-size">${app.size}</span>
+        </div>
+      </div>
+      <button class="app-list-install ripple" onclick="event.stopPropagation();installApp(${app.id})">Install</button>
+    </div>`;
+}
+
+function renderRecommended(){
+  const ids=[2,6,23,14,21,8,11,4];
+  document.getElementById('recommendedRow').innerHTML=ids.map(id=>appCardHTML(APPS[id],id===23)).join('');
+}
+function renderFeaturedGames(){
+  const ids=[0,3,7,15,19,12,22,17];
+  document.getElementById('featuredGamesRow').innerHTML=ids.map(id=>appCardHTML(APPS[id],id===15)).join('');
+}
+function renderTopFreeApps(){
+  const ids=[1,5,2,4,14,8,10,6];
+  document.getElementById('topFreeList').innerHTML=ids.map((id,i)=>appListItemHTML(APPS[id],i+1)).join('');
+}
+function renderPopularGames(){
+  const ids=[0,7,3,15,19,12,22,17];
+  document.getElementById('popularGamesRow').innerHTML=ids.map(id=>appCardLgHTML(APPS[id])).join('');
+}
+function renderSocialApps(){
+  const ids=[2,10,13,16,4,11];
+  document.getElementById('socialRow').innerHTML=ids.map(id=>appCardHTML(APPS[id])).join('');
+}
+function renderEditorsChoice(){
+  const ids=[1,6,23,21,8,15];
+  document.getElementById('editorsRow').innerHTML=ids.map(id=>appCardLgHTML(APPS[id])).join('');
+}
+function renderProductivity(){
+  const ids=[18,14,20,21,8];
+  document.getElementById('productivityRow').innerHTML=ids.map(id=>appCardHTML(APPS[id])).join('');
+}
+function renderEntertainment(){
+  const ids=[5,9,4,6];
+  document.getElementById('entertainmentRow').innerHTML=ids.map(id=>appCardHTML(APPS[id])).join('');
+}
+
+// ===== HERO CAROUSEL =====
+let currentSlide=0;
+let carouselInterval;
+function renderHeroDots(){
+  const slides=document.querySelectorAll('.hero-slide');
+  const el=document.getElementById('heroDots');
+  el.innerHTML=Array.from(slides).map((_,i)=>`<div class="hero-dot${i===0?' active':''}" onclick="goToSlide(${i})"></div>`).join('');
+}
+function goToSlide(n){
+  const slides=document.querySelectorAll('.hero-slide');
+  const dots=document.querySelectorAll('.hero-dot');
+  slides.forEach(s=>s.classList.remove('active'));
+  dots.forEach(d=>d.classList.remove('active'));
+  currentSlide=n;
+  slides[n].classList.add('active');
+  dots[n].classList.add('active');
+}
+function nextSlide(){
+  const slides=document.querySelectorAll('.hero-slide');
+  goToSlide((currentSlide+1)%slides.length);
+}
+function startCarousel(){
+  carouselInterval=setInterval(nextSlide,4000);
+}
+
+// ===== SCROLL EFFECTS =====
+function initScrollEffects(){
+  window.addEventListener('scroll',()=>{
+    const nav=document.getElementById('navbar');
+    nav.classList.toggle('scrolled',window.scrollY>10);
+  });
+}
+
+// ===== SEARCH =====
+function handleSearch(val){
+  const clear=document.getElementById('searchClear');
+  clear.classList.toggle('active',val.length>0);
+  if(val.length<2){
+    document.getElementById('searchSuggestions').classList.remove('active');
+    if(val.length===0) hideSearchResults();
+    return;
+  }
+  showSearchSuggestions(val);
+}
+function showSuggestions(){
+  const val=document.getElementById('searchInput').value;
+  if(val.length>=2) showSearchSuggestions(val);
+}
+function showSearchSuggestions(val){
+  const results=APPS.filter(a=>a.name.toLowerCase().includes(val.toLowerCase())||a.category.toLowerCase().includes(val.toLowerCase())||a.dev.toLowerCase().includes(val.toLowerCase()));
+  const el=document.getElementById('searchSuggestions');
+  if(results.length===0){
+    el.innerHTML=`<div class="search-suggestion"><span class="material-icons-round">search_off</span><span class="search-suggestion-text">No results for "${val}"</span></div>`;
+  }else{
+    el.innerHTML=results.slice(0,8).map(a=>`
+      <div class="search-suggestion" onclick="openApp(${a.id});closeSuggestions();">
+        <span class="material-icons-round">search</span>
+        <span class="search-suggestion-text">${highlightMatch(a.name,val)}</span>
+        <span class="search-suggestion-cat">${a.category}</span>
+      </div>`).join('');
+  }
+  el.classList.add('active');
+}
+function highlightMatch(text,query){
+  const idx=text.toLowerCase().indexOf(query.toLowerCase());
+  if(idx===-1) return text;
+  return text.slice(0,idx)+'<strong>'+text.slice(idx,idx+query.length)+'</strong>'+text.slice(idx+query.length);
+}
+function closeSuggestions(){document.getElementById('searchSuggestions').classList.remove('active');}
+function clearSearch(){
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchClear').classList.remove('active');
+  closeSuggestions();
+  hideSearchResults();
+}
+function hideSearchResults(){
+  document.getElementById('searchResultsPage').style.display='none';
+  document.getElementById('homePage').style.display='block';
+  document.getElementById('categoryPage').style.display='none';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.nav-search')) closeSuggestions();
+  if(!e.target.closest('.nav-avatar')&&!e.target.closest('.profile-dropdown')) closeProfile();
+});
+document.getElementById('searchInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    const val=e.target.value;
+    if(val.length>=1) showSearchResults(val);
+    closeSuggestions();
+  }
+});
+function showSearchResults(query){
+  const results=APPS.filter(a=>a.name.toLowerCase().includes(query.toLowerCase())||a.category.toLowerCase().includes(query.toLowerCase())||a.dev.toLowerCase().includes(query.toLowerCase()));
+  document.getElementById('homePage').style.display='none';
+  document.getElementById('categoryPage').style.display='none';
+  document.getElementById('searchResultsPage').style.display='block';
+  document.getElementById('searchResultsTitle').textContent=`Results for "${query}"`;
+  document.getElementById('searchResultsCount').textContent=`${results.length} apps found`;
+  document.getElementById('searchResultsList').innerHTML=results.length?results.map(a=>appListItemHTML(a)).join(''):`<div style="text-align:center;padding:40px;color:var(--text3);"><span class="material-icons-round" style="font-size:48px;display:block;margin-bottom:12px;">search_off</span>No apps found for "${query}"</div>`;
+}
+
+// ===== CATEGORY PAGE =====
+function showCategoryPage(cat){
+  const catMap={
+    'games':['Action','Casual','Strategy','Puzzle','Adventure','Board'],
+    'social':['Social'],
+    'entertainment':['Entertainment','Video Players'],
+    'communication':['Communication'],
+    'productivity':['Productivity','Business'],
+    'education':['Education'],
+    'tools':['Tools','Navigation'],
+    'music & audio':['Music & Audio'],
+    'art & design':['Art & Design'],
+    'business':['Business'],
+    'recommended':null,
+    'top-free':null,
+    'popular-games':['Action','Casual','Strategy','Puzzle','Adventure','Board'],
+    'editors-choice':null,
+  };
+  let filtered;
+  const catInfo=CATEGORIES.find(c=>c.name.toLowerCase()===cat);
+  if(cat==='recommended'||cat==='editors-choice'){
+    filtered=APPS;
+  }else if(cat==='top-free'){
+    filtered=[...APPS].sort((a,b)=>parseFloat(b.downloads)-parseFloat(a.downloads));
+  }else{
+    const cats=catMap[cat]||[cat.charAt(0).toUpperCase()+cat.slice(1)];
+    filtered=APPS.filter(a=>cats.some(c=>a.category.toLowerCase().includes(c.toLowerCase())));
+  }
+  document.getElementById('homePage').style.display='none';
+  document.getElementById('searchResultsPage').style.display='none';
+  document.getElementById('categoryPage').style.display='block';
+  const header=document.getElementById('catPageHeader');
+  const displayName=cat.split('-').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
+  header.innerHTML=`
+    <div class="category-page-icon" style="background:${catInfo?catInfo.bg:'var(--primary-bg)'};color:${catInfo?catInfo.color:'var(--primary)'};">
+      <span class="material-icons-round">${catInfo?catInfo.icon:'apps'}</span>
+    </div>
+    <div class="category-page-info">
+      <h2>${displayName}</h2>
+      <p>${filtered.length} apps available</p>
+    </div>`;
+  document.getElementById('catPageList').innerHTML=filtered.map(a=>appListItemHTML(a)).join('');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== APP DETAIL PAGE =====
+function openApp(id){
+  const app=APPS[id];
+  if(!app) return;
+  const page=document.getElementById('appDetailPage');
+  const fullStars=Math.floor(app.rating);
+  const hasHalf=app.rating%1>=0.3;
+  const starsHTML=Array(5).fill(0).map((_,i)=>{
+    if(i<fullStars) return `<span class="material-icons-round">star</span>`;
+    if(i===fullStars&&hasHalf) return `<span class="material-icons-round">star_half</span>`;
+    return `<span class="material-icons-round empty">star</span>`;
+  }).join('');
+
+  const screenshotColors=app.screenshots||['#ccc','#aaa','#888','#666'];
+  const screenshotsHTML=screenshotColors.map((c,i)=>`
+    <div class="screenshot-item" onclick="openImgModal(this)">
+      <div style="width:100%;height:100%;background:linear-gradient(180deg,${c},${adjustColor(c,-30)});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:20px;">
+        <img src="${app.icon}" alt="" style="width:50px;height:50px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.3);"/>
+        <span style="color:white;font-size:0.75rem;font-weight:600;text-align:center;text-shadow:0 1px 5px rgba(0,0,0,0.3);">Screenshot ${i+1}</span>
+      </div>
+    </div>`).join('');
+
+  const reviewsHTML=app.reviewsList.map(r=>{
+    const rStars=Array(5).fill(0).map((_,i)=>i<r.rating?`<span class="material-icons-round">star</span>`:`<span class="material-icons-round empty">star</span>`).join('');
+    return `
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-avatar" style="background:${r.avatar}">${r.user.charAt(0)}</div>
+        <div class="review-user-info">
+          <div class="review-user-name">${r.user}</div>
+          <div class="review-date">${r.date}</div>
+        </div>
+      </div>
+      <div class="review-stars">${rStars}</div>
+      <div class="review-text">${r.text}</div>
+      <div class="review-helpful">
+        <button onclick="event.stopPropagation()"><span class="material-icons-round" style="font-size:14px;">thumb_up</span> ${r.helpful}</button>
+        <button onclick="event.stopPropagation()"><span class="material-icons-round" style="font-size:14px;">thumb_down</span></button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const whatsNewHTML=app.whatsNew?`<ul>${app.whatsNew.map(w=>`<li>${w}</li>`).join('')}</ul>`:'';
+
+  const similarApps=APPS.filter(a=>a.id!==id&&(a.category===app.category||Math.random()>0.5)).slice(0,6);
+
+  page.innerHTML=`
+    <div class="detail-nav">
+      <button class="detail-back" onclick="closeApp()"><span class="material-icons-round">arrow_back</span></button>
+      <div class="detail-nav-title">${app.name}</div>
+      <div class="detail-nav-actions">
+        <button class="nav-btn" onclick="showToast('Added to wishlist')"><span class="material-icons-round">bookmark_border</span></button>
+        <button class="nav-btn" onclick="shareApp('${app.name}')"><span class="material-icons-round">share</span></button>
+        <button class="nav-btn"><span class="material-icons-round">more_vert</span></button>
+      </div>
+    </div>
+
+    <div class="detail-header">
+      <div class="detail-icon"><img src="${app.icon}" alt="${app.name}"/></div>
+      <div class="detail-info">
+        <div class="detail-name">${app.name}</div>
+        <div class="detail-dev">${app.dev}</div>
+        <div class="detail-contains"><span class="material-icons-round" style="font-size:14px;">info</span>${app.contains}</div>
+      </div>
+    </div>
+
+    <div class="detail-stats">
+      <div class="detail-stat">
+        <div class="detail-stat-value"><span class="material-icons-round star">star</span>${app.rating}</div>
+        <div class="detail-stat-label">${app.reviews} reviews</div>
+      </div>
+      <div class="detail-stat">
+        <div class="detail-stat-value">${app.downloads}</div>
+        <div class="detail-stat-label">Downloads</div>
+      </div>
+      <div class="detail-stat">
+        <div class="detail-stat-value">${app.size}</div>
+        <div class="detail-stat-label">Size</div>
+      </div>
+      <div class="detail-stat">
+        <div class="detail-stat-value"><span class="material-icons-round" style="font-size:16px;">child_care</span>${app.age}</div>
+        <div class="detail-stat-label">Rated for</div>
+      </div>
+    </div>
+
+    <div class="detail-install-section">
+      <button class="detail-install-btn ripple" id="detailInstallBtn" onclick="installApp(${app.id})">
+        <span class="material-icons-round">get_app</span> Install
+      </button>
+    </div>
+
+    <div class="detail-screenshots">
+      <div class="detail-screenshots-title">Screenshots</div>
+      <div class="screenshots-row">${screenshotsHTML}</div>
+    </div>
+
+    <div class="detail-description">
+      <h3>About this app</h3>
+      <div class="detail-desc-text collapsed" id="descText">${app.desc}</div>
+      <span class="read-more-btn" onclick="toggleDesc()">Read more</span>
+    </div>
+
+    <div class="detail-whats-new">
+      <h3>What's new</h3>
+      <div class="whats-new-content">${whatsNewHTML}</div>
+      <div style="font-size:0.72rem;color:var(--text3);margin-top:6px;">Updated on ${app.updated} · v${app.version}</div>
+    </div>
+
+    <div class="detail-ratings">
+      <h3>Ratings and reviews</h3>
+      <div class="ratings-overview">
+        <div class="ratings-big">
+          <div class="ratings-big-num">${app.rating}</div>
+          <div class="ratings-stars">${starsHTML}</div>
+          <div class="ratings-count">${app.reviews}</div>
+        </div>
+        <div class="ratings-bars">
+          <div class="rating-bar-row rating-bar-5"><span class="rating-bar-num">5</span><div class="rating-bar-track"><div class="rating-bar-fill"></div></div></div>
+          <div class="rating-bar-row rating-bar-4"><span class="rating-bar-num">4</span><div class="rating-bar-track"><div class="rating-bar-fill"></div></div></div>
+          <div class="rating-bar-row rating-bar-3"><span class="rating-bar-num">3</span><div class="rating-bar-track"><div class="rating-bar-fill"></div></div></div>
+          <div class="rating-bar-row rating-bar-2"><span class="rating-bar-num">2</span><div class="rating-bar-track"><div class="rating-bar-fill"></div></div></div>
+          <div class="rating-bar-row rating-bar-1"><span class="rating-bar-num">1</span><div class="rating-bar-track"><div class="rating-bar-fill"></div></div></div>
+        </div>
+      </div>
+      ${reviewsHTML}
+    </div>
+
+    <div class="detail-data-safety">
+      <h3>Data safety</h3>
+      <div class="data-safety-card">
+        <div class="data-safety-item">
+          <span class="material-icons-round">share</span>
+          <div class="data-safety-text"><strong>Data shared with third parties</strong>This app may share data with third parties</div>
+        </div>
+        <div class="data-safety-item">
+          <span class="material-icons-round">inventory_2</span>
+          <div class="data-safety-text"><strong>Data collected</strong>Personal info, Financial info, App activity</div>
+        </div>
+        <div class="data-safety-item">
+          <span class="material-icons-round">lock</span>
+          <div class="data-safety-text"><strong>Data encrypted in transit</strong>Your data is transferred over a secure connection</div>
+        </div>
+        <div class="data-safety-item">
+          <span class="material-icons-round">delete</span>
+          <div class="data-safety-text"><strong>Data can be deleted</strong>You can request that data be deleted</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-similar">
+      <h3>Similar apps</h3>
+      <div class="app-row">${similarApps.map(a=>appCardHTML(a)).join('')}</div>
+    </div>
+  `;
+  page.style.display='block';
+  page.scrollTop=0;
+  document.body.style.overflow='hidden';
+}
+function closeApp(){
+  document.getElementById('appDetailPage').style.display='none';
+  document.body.style.overflow='';
+}
+function toggleDesc(){
+  const el=document.getElementById('descText');
+  const btn=el.nextElementSibling;
+  el.classList.toggle('collapsed');
+  btn.textContent=el.classList.contains('collapsed')?'Read more':'Show less';
+}
+
+// ===== INSTALL =====
+function installApp(id){
+  const app=APPS[id];
+  const modal=document.getElementById('installModal');
+  document.getElementById('installModalIcon').innerHTML=`<img src="${app.icon}" alt="${app.name}"/>`;
+  document.getElementById('installModalName').textContent=app.name;
+  document.getElementById('installModalDev').textContent=app.dev;
+  document.getElementById('installProgressBar').style.width='0%';
+  document.getElementById('installProgressText').textContent='Downloading...';
+  modal.classList.add('active');
+
+  let progress=0;
+  const interval=setInterval(()=>{
+    progress+=Math.random()*15+5;
+    if(progress>=100){
+      progress=100;
+      clearInterval(interval);
+      document.getElementById('installProgressText').textContent='Installing...';
+      setTimeout(()=>{
+        document.getElementById('installProgressText').textContent='Installed!';
+        setTimeout(()=>{
+          modal.classList.remove('active');
+          showToast(`${app.name} installed successfully!`);
+          const btn=document.getElementById('detailInstallBtn');
+          if(btn){
+            btn.classList.add('installed');
+            btn.innerHTML='<span class="material-icons-round">check_circle</span> Open';
+          }
+        },800);
+      },600);
+    }
+    document.getElementById('installProgressBar').style.width=progress+'%';
+  },200);
+}
+
+// ===== THEME =====
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('themeIcon').textContent=isDark?'dark_mode':'light_mode';
+}
+
+// ===== PROFILE =====
+function toggleProfile(){
+  document.getElementById('profileDropdown').classList.toggle('active');
+  document.getElementById('overlay').classList.toggle('active');
+}
+function closeProfile(){
+  document.getElementById('profileDropdown').classList.remove('active');
+  document.getElementById('overlay').classList.remove('active');
+}
+function closeAll(){closeProfile();}
+
+// ===== TABS =====
+function switchTab(el,cat){
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  if(cat==='for-you') goHome();
+  else if(cat==='top-charts') showCategoryPage('top-free');
+  else showCategoryPage(cat);
+}
+function switchBottomNav(el,cat){
+  document.querySelectorAll('.bottom-nav-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  if(cat==='games') showCategoryPage('games');
+  else if(cat==='apps') goHome();
+  else showCategoryPage(cat);
+}
+
+// ===== NAVIGATION =====
+function goHome(){
+  document.getElementById('homePage').style.display='block';
+  document.getElementById('searchResultsPage').style.display='none';
+  document.getElementById('categoryPage').style.display='none';
+  closeApp();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== TOAST =====
+function showToast(msg){
+  const el=document.getElementById('toast');
+  document.getElementById('toastText').textContent=msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// ===== IMAGE MODAL =====
+function openImgModal(el){
+  const modal=document.getElementById('imgModal');
+  const div=el.querySelector('div');
+  if(div){
+    const canvas=document.createElement('canvas');
+    canvas.width=360;canvas.height=640;
+    const ctx=canvas.getContext('2d');
+    const bg=div.style.background||'#333';
+    ctx.fillStyle='#333';ctx.fillRect(0,0,360,640);
+    document.getElementById('imgModalImg').src=canvas.toDataURL();
+  }
+  modal.classList.add('active');
+}
+function closeImgModal(){document.getElementById('imgModal').classList.remove('active');}
+
+// ===== SHARE =====
+function shareApp(name){
+  if(navigator.share){
+    navigator.share({title:name,text:`Check out ${name} on SofiStore!`,url:window.location.href});
+  }else{
+    showToast('Link copied to clipboard!');
+  }
+}
+
+// ===== UTILITY =====
+function adjustColor(hex,amount){
+  hex=hex.replace('#','');
+  if(hex.length===3) hex=hex.split('').map(c=>c+c).join('');
+  let r=parseInt(hex.substr(0,2),16)+amount;
+  let g=parseInt(hex.substr(2,2),16)+amount;
+  let b=parseInt(hex.substr(4,2),16)+amount;
+  r=Math.max(0,Math.min(255,r));g=Math.max(0,Math.min(255,g));b=Math.max(0,Math.min(255,b));
+  return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+}
+
+// ===== KEYBOARD =====
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    closeApp();closeImgModal();closeProfile();
+  }
+});
+</script>
+</body>
+</html>
